@@ -1,0 +1,27 @@
+package org.justinnk.ssamason.evaluation.benchmarks;
+
+import org.justinnk.ssamason.demo.ssamason.sirs.SirsModel;
+import org.justinnk.ssamason.evaluation.Experiment;
+import org.justinnk.ssamason.extension.ssa.FirstReactionMethod;
+import org.openjdk.jmh.annotations.*;
+
+import java.util.concurrent.TimeUnit;
+
+public class BenchmarkSirsErdosRenyiFrm extends BenchmarkSirsErdosRenyi {
+	@Setup(Level.Iteration)
+	public void SetUp() {
+		// System.out.println("setup model");
+		model = new SirsModel(Experiment.seed + currentIteration, new FirstReactionMethod(), getGraph());
+		((SirsModel) model).setNumHumans(this.numHumans);
+		model.start();
+		model.schedule.step(model);
+		currentIteration++;
+	}
+
+	@BenchmarkMode(Mode.Throughput)
+	@OutputTimeUnit(TimeUnit.SECONDS)
+	@Benchmark
+	public void stepFrm() {
+		model.schedule.step(model);
+	}
+}
