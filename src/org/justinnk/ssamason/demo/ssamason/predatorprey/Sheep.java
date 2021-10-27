@@ -21,9 +21,7 @@ public class Sheep extends Species {
 			state.world.setObjectLocation(newBorn, state.randomPos());
 			state.sheep.addNode(newBorn);
 			log("Gives birth to " + newBorn);
-		}, () -> {
-			return state.sheepReproduce;
-		}, "Reproduce"));
+		}, () -> state.sheepReproduce, "Reproduce"));
 
 //		this.addAction(new Action(
 //				() -> state.sheep.getEdges(this, null).size() < maxFriends,

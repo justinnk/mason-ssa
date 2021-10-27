@@ -58,7 +58,7 @@ public class Human extends Agent {
 		/*
 		 * if (infectiousNeighbours == 0.0) { currentAction = null; } else {
 		 */
-		double rate = ((SirsModel) model).getInfectionRate() * infectiousNeighbours + (0.005 / 1.0);
+		double rate = ((SirsModel) model).getInfectionRate() * infectiousNeighbours + (0.005);
 		double waitingTime = (1.0 / rate) * Math.log(1.0 / model.random.nextDouble());
 		this.scheduleActionOnceIn(waitingTime, "infect");
 		// log("scheduled infection at " + (model.schedule.getTime() + waitingTime));
@@ -66,7 +66,7 @@ public class Human extends Agent {
 	}
 
 	private void scheduleImmunityLoss() {
-		double rate = 0.05 / 1.0;
+		double rate = 0.05;
 		double waitingTime = (1.0 / rate) * Math.log(1.0 / model.random.nextDouble());
 		this.scheduleActionOnceIn(waitingTime, "loseImmunity");
 	}

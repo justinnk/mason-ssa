@@ -4,18 +4,14 @@ import java.util.HashMap;
 
 public class PerformanceMetrics {
 
-	private static HashMap<String, Long> staticMetrics = new HashMap<String, Long>();
+	private static HashMap<String, Long> staticMetrics = new HashMap<>();
 
 	public static void resetStatics() {
 		staticMetrics.clear();
 	}
 
 	public static long getStaticMetric(String name) {
-		if (staticMetrics.containsKey(name)) {
-			return staticMetrics.get(name);
-		} else {
-			return 0l;
-		}
+		return staticMetrics.getOrDefault(name, 0L);
 	}
 
 	public static void printStaticMetric(String name) {
@@ -47,7 +43,7 @@ public class PerformanceMetrics {
 		}
 		data.addEntry("totalTime", totalTime);
 		data.addEntry("nRuns", nRuns);
-		data.addEntry("timePerRun", (double) totalTime / nRuns);
+		data.addEntry("timePerRun", totalTime / nRuns);
 		return data;
 	}
 

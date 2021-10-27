@@ -46,7 +46,7 @@ public class Students extends SimState {
 			Object student = students.get(i);
 
 			// who does he/she like?
-			Object studentB = null;
+			Object studentB;
 			do {
 				studentB = students.get(random.nextInt(students.numObjs));
 			} while (student == studentB);

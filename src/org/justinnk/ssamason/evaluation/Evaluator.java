@@ -39,7 +39,7 @@ public class Evaluator {
 	public static void main(String[] args) throws RunnerException {
 		/* Gather methods to test from CLI-arguments */
 		Method method;
-		if (args.length == 0 || args.length > 1) {
+		if (args.length != 1) {
 			System.out.println("Usage: <method>, <method> ::= frm | ldm | nrm | odm | vanilla");
 			System.exit(1);
 		}
@@ -159,7 +159,7 @@ public class Evaluator {
 	/**
 	 * Test the performance of different simulators on a grid-like contact graph.
 	 * 
-	 * @throws RunnerException
+	 * @throws RunnerException When jmh fails.
 	 */
 	private static void gridPerformance(Method method) throws RunnerException {
 		OptionsBuilder opt = new OptionsBuilder();
@@ -201,7 +201,7 @@ public class Evaluator {
 	 * Test the performance of different simulators depending on total population
 	 * size and contact graph density.
 	 * 
-	 * @throws RunnerException
+	 * @throws RunnerException When jmh fails.
 	 */
 	private static void erdosRenyiPerformance(Method method) throws RunnerException {
 		OptionsBuilder opt = new OptionsBuilder();
@@ -242,7 +242,7 @@ public class Evaluator {
 	/**
 	 * Test the performance of the FRM with the NRM aspect woven into the model.
 	 * 
-	 * @throws RunnerException
+	 * @throws RunnerException When jmh fails.
 	 */
 	private static void overhead(Method method) throws RunnerException {
 		if (method == Method.frm_overhead) {
@@ -264,7 +264,7 @@ public class Evaluator {
 	 * Test the time taken for initialisation of NRM, ODM and Vanilla.
 	 * Also measure the first step of FRM and LDM.
 	 * 
-	 * @throws RunnerException
+	 * @throws RunnerException When jmh fails.
 	 */
 	private static void initPerformance(Method method) throws RunnerException {
 		OptionsBuilder opt = new OptionsBuilder();

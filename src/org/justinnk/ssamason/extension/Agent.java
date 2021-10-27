@@ -4,6 +4,7 @@ import sim.engine.SimState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /** A base class for every agent of a MASON simulation using an SSA. */
 public class Agent {
@@ -24,7 +25,7 @@ public class Agent {
 	/** Add a new behaviour rule to this agent. */
 	protected void addAction(Action action) {
 		/* actions must have names unique within agents. */
-		if (this.actions.stream().anyMatch((a) -> a.getName() == action.getName())) {
+		if (this.actions.stream().anyMatch((a) -> Objects.equals(a.getName(), action.getName()))) {
 			System.err.println("Error: Agent actions must have unique names.");
 			System.exit(1);
 		}
@@ -95,8 +96,6 @@ public class Agent {
 		if (getClass() != obj.getClass())
 			return false;
 		Agent other = (Agent) obj;
-		if (id != other.id)
-			return false;
-		return true;
+		return id == other.id;
 	}
 }

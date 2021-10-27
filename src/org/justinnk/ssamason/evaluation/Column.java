@@ -1,12 +1,13 @@
 package org.justinnk.ssamason.evaluation;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class Column {
-	public HashMap<Integer, Object> data = new HashMap<Integer, Object>();
-	public String name = "";
+	public HashMap<Integer, Object> data = new HashMap<>();
+	public String name;
 
 	public Column() {
 		this.name = this.toString();
@@ -17,7 +18,7 @@ public class Column {
 	}
 
 	public void addEntry(Object value) {
-		Optional<Integer> last = data.keySet().stream().max((x, y) -> x.compareTo(y));
+		Optional<Integer> last = data.keySet().stream().max(Comparator.naturalOrder());
 		if (last.isPresent()) {
 			data.put(last.get() + 1, value);
 		} else {
@@ -26,7 +27,7 @@ public class Column {
 	}
 
 	public void addEntries(HashMap<Integer, Object> values) {
-		Optional<Integer> last = data.keySet().stream().max((x, y) -> x.compareTo(y));
+		Optional<Integer> last = data.keySet().stream().max(Comparator.naturalOrder());
 		if (last.isPresent()) {
 			int i = 0;
 			for (Object value : values.keySet().stream().sorted().toArray()) {

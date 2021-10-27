@@ -11,10 +11,10 @@ import java.nio.file.Paths;
 
 public class PredatorPreyCorrectnessExperiment extends Experiment {
 
-	private int numWolf = 0;
-	private int numSheep = 0;
-	private String algorithmName;
-	private StochasticSimulationAlgorithm algorithm;
+	private final int numWolf;
+	private final int numSheep;
+	private final String algorithmName;
+	private final StochasticSimulationAlgorithm algorithm;
 
 	public PredatorPreyCorrectnessExperiment(String algorithmName, StochasticSimulationAlgorithm algorithm, int numWolf,
 			int numSheep) {

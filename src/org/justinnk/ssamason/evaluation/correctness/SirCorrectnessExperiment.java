@@ -16,11 +16,11 @@ import java.nio.file.Path;
 public abstract class SirCorrectnessExperiment extends Experiment {
 
 	/** Number of humans in the model. */
-	protected int numHumans = 50;
+	protected int numHumans;
 	/** Graph density (probability for ErdosRenyi-Generator). */
-	protected double density = 0.2;
+	protected double density;
 	/** Number of initially infected humans. */
-	protected int initialInfected = 1;
+	protected int initialInfected;
 
 	public SirCorrectnessExperiment(int numHumans, double density, int initialInfected) {
 		this.numHumans = numHumans;

@@ -28,8 +28,8 @@ public class LogarithmicDirectMethod extends StochasticSimulationAlgorithm {
 
 	private void step() {
 		double rateSum = 0;
-		ArrayList<Double> partialSums = new ArrayList<Double>(Action.ActionInstances.size());
-		ArrayList<Action> applicableActions = new ArrayList<Action>(Action.ActionInstances.size());
+		ArrayList<Double> partialSums = new ArrayList<>(Action.ActionInstances.size());
+		ArrayList<Action> applicableActions = new ArrayList<>(Action.ActionInstances.size());
 		nextAction = null;
 		/* calculate sum of propensities and list of partial sums */
 		for (Action action : Action.ActionInstances) {
@@ -52,7 +52,7 @@ public class LogarithmicDirectMethod extends StochasticSimulationAlgorithm {
 			double propensityLimit = r2 * rateSum;
 			int rightBound = partialSums.size() - 1;
 			int leftBound = 0;
-			int center = 0;
+			int center;
 			while (leftBound <= rightBound) {
 				center = leftBound + ((rightBound - leftBound) / 2);
 				if ((center == 0 && partialSums.get(center) > propensityLimit)

@@ -8,7 +8,7 @@ import sim.util.Bag;
 public class ErdosRenyiGraphCreator extends GraphCreator {
 
 	/** The uniform probability for each edge to exist. */
-	private double probability = 1.0;
+	private final double probability;
 	/** The random generator used. */
 	MersenneTwisterFast random;
 
@@ -46,7 +46,7 @@ public class ErdosRenyiGraphCreator extends GraphCreator {
 		int size = nodes.size();
 		for (int i = 0; i < size; i++) {
 			for (int j = i; j < size; j++) {
-				if (i != j && random.nextDouble() <= probability) {
+				if (i != j && random.nextDouble() <= this.probability) {
 					Object nodeA = nodes.get(i);
 					Object nodeB = nodes.get(j);
 					network.addEdge(nodeA, nodeB, 1.0);

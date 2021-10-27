@@ -77,7 +77,7 @@
 			<artifactId>mason</artifactId>
 			<version>20</version>
 		</dependency>
-		<!-- needeed for charting -->
+		<!-- needed for charting -->
 		<dependency>
 			<groupId>org.jfree</groupId>
 			<artifactId>jcommon</artifactId>

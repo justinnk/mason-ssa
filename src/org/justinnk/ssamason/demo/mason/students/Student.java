@@ -41,7 +41,7 @@ public class Student implements Steppable {
 		int len = out.size();
 		for (int buddy = 0; buddy < len; buddy++) {
 			Edge e = (Edge) (out.get(buddy));
-			double buddiness = ((Double) (e.info)).doubleValue();
+			double buddiness = (Double) (e.info);
 
 			// I could be in the to() end or the from() end. getOtherNode is a cute function
 			// which grabs the guy at the opposite end from me.
@@ -72,8 +72,8 @@ public class Student implements Steppable {
 		sumForces.addIn(new Double2D((yard.width * 0.5 - me.x) * students.forceToSchoolMultiplier,
 				(yard.height * 0.5 - me.y) * students.forceToSchoolMultiplier));
 
-		sumForces.addIn(new Double2D(students.randomMultiplier * (students.random.nextDouble() * 1.0 - 0.5),
-				students.randomMultiplier * (students.random.nextDouble() * 1.0 - 0.5)));
+		sumForces.addIn(new Double2D(students.randomMultiplier * (students.random.nextDouble() - 0.5),
+				students.randomMultiplier * (students.random.nextDouble() - 0.5)));
 
 		sumForces.addIn(me);
 

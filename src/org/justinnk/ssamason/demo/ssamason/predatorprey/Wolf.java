@@ -42,9 +42,7 @@ public class Wolf extends Species {
 			this.hunger += 1;
 			/* because of the rate, fertility will always be >0 here */
 			this.fertility -= 1;
-		}, () -> {
-			return state.wolfReproduction * this.fertility;
-		}, "Mate"));
+		}, () -> state.wolfReproduction * this.fertility, "Mate"));
 
 		this.addAction(new Action(() -> true, () -> {
 			log("Goes undercover");
@@ -53,29 +51,21 @@ public class Wolf extends Species {
 				state.undercoverNet.addEdge(this, observed, 1.0);
 				log("adds " + observed + " to whatchlist");
 			}
-		}, () -> {
-			return state.wolfGoUndercover;
-		}, "GoUndercover"));
+		}, () -> state.wolfGoUndercover, "GoUndercover"));
 
-		this.addAction(new Action(() -> {
-			return !hasContactWith(this.hobby) 
-					|| (this.hunger >= Wolf.maxHunger && state.undercoverNet.getEdges(this, null).size() == 0);
-		}, () -> {
+		this.addAction(new Action(() -> !hasContactWith(this.hobby)
+				|| (this.hunger >= Wolf.maxHunger && state.undercoverNet.getEdges(this, null).size() == 0), () -> {
 			log("Dies");
 			this.kill();
 			state.world.remove(this);
 			state.wolves.removeNode(this);
 			state.undercoverNet.removeNode(this);
-		}, () -> {
-			return state.wolfDie;
-		}, "Die"));
+		}, () -> state.wolfDie, "Die"));
 
 		this.addAction(new Action(() -> this.hunger < Wolf.maxHunger, () -> {
 			log("Hungers");
 			this.hunger += 1;
-		}, () -> {
-			return state.wolfHunger;
-		}, "Hunger"));
+		}, () -> state.wolfHunger, "Hunger"));
 
 		this.addAction(new Action(() -> this.hunger > 0, () -> {
 			log("Hunts");
@@ -128,8 +118,7 @@ public class Wolf extends Species {
 					.filter(s -> s instanceof Sheep && !alreadyObservedSheep.contains(s)).collect(Collectors.toList());
 			if (!potentialNewPrey.isEmpty()) {
 				/* pick a random sheep as prey */
-				Sheep pick = (Sheep) potentialNewPrey.get(state.random.nextInt(potentialNewPrey.size()));
-				return pick;
+				return potentialNewPrey.get(state.random.nextInt(potentialNewPrey.size()));
 			}
 		}
 		/* if no prey was found */

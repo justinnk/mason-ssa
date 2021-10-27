@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestAttributeDependencyGraph {
 
-	class A extends Agent {
+	static class A extends Agent {
 		public int a;
 		public int b;
 
@@ -22,7 +22,7 @@ class TestAttributeDependencyGraph {
 		}
 	}
 
-	class B extends Agent {
+	static class B extends Agent {
 		public int a;
 
 		public B(SimState model) {
@@ -38,7 +38,7 @@ class TestAttributeDependencyGraph {
 	B b1;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 
 		a1 = new A(null);
 		a2 = new A(null);

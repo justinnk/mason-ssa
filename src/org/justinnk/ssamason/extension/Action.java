@@ -15,7 +15,7 @@ public class Action {
 	 * Holds a list of all actions created. This list has to be cleared in the
 	 * SimStates finish() method when using the GUI.
 	 */
-	public static List<Action> ActionInstances = new ArrayList<Action>();
+	public static List<Action> ActionInstances = new ArrayList<>();
 	/**
 	 * Counts the number of actions to give them unique names if no name is
 	 * supplied.
@@ -223,10 +223,7 @@ public class Action {
 		} else if (!name.equals(other.name))
 			return false;
 		if (owner == null) {
-			if (other.owner != null)
-				return false;
-		} else if (!owner.equals(other.owner))
-			return false;
-		return true;
+			return other.owner == null;
+		} else return owner.equals(other.owner);
 	}
 }

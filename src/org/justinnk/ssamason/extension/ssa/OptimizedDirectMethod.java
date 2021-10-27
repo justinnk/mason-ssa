@@ -30,12 +30,12 @@ public class OptimizedDirectMethod extends DependencyBasedSSA {
 		this.rateSum = 0;
 		nextAction = null;
 		/* Use LogarithmicDirectMethod step for initialisation */
-		ArrayList<Double> partialSums = new ArrayList<Double>(Action.ActionInstances.size());
-		ArrayList<Action> applicableActions = new ArrayList<Action>(Action.ActionInstances.size());
+		ArrayList<Double> partialSums = new ArrayList<>(Action.ActionInstances.size());
+		ArrayList<Action> applicableActions = new ArrayList<>(Action.ActionInstances.size());
 		/* calculate sum of propensities and list of partial sums */
 		for (Action action : Action.ActionInstances) {
 			double rate = initAction(action);
-			if (rate != Double.NEGATIVE_INFINITY && rate > 0) {
+			if (rate > 0) { // implicit: rate != Double.NEGATIVE_INFINITY
 				this.rateSum += rate;
 				partialSums.add(this.rateSum);
 				applicableActions.add(action);
@@ -51,7 +51,7 @@ public class OptimizedDirectMethod extends DependencyBasedSSA {
 			double propensityLimit = r2 * this.rateSum;
 			int rightBound = partialSums.size() - 1;
 			int leftBound = 0;
-			int center = 0;
+			int center;
 			while (leftBound <= rightBound) {
 				center = leftBound + ((rightBound - leftBound) / 2);
 				if ((center == 0 && partialSums.get(center) > propensityLimit)
@@ -89,7 +89,7 @@ public class OptimizedDirectMethod extends DependencyBasedSSA {
 	 * @param action The action to initialise.
 	 */
 	public double initAction(Action action) {
-		double rate = 0;
+		double rate;
 		if (action.evaluateCondition()) {
 			rate = action.calculateRate();
 			return rate;

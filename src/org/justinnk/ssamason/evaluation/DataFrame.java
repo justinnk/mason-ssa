@@ -1,16 +1,17 @@
 package org.justinnk.ssamason.evaluation;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
 /** A simple table consisting of columns indexed by a double. */
 public class DataFrame {
 	public String name;
-	public ArrayList<Column> columns = new ArrayList<Column>();
+	public ArrayList<Column> columns = new ArrayList<>();
 
 	public DataFrame() {
-		this.name = "<DataFrame" + this.toString() + ">";
+		this.name = "<DataFrame" + this + ">";
 	}
 
 	/** Returns whether this table has any non-empty columns. */
@@ -23,11 +24,11 @@ public class DataFrame {
 
 	/** Tries to retrieve the column with the given name. */
 	public Optional<Column> get(String column) {
-		return columns.stream().filter(c -> c.name == column).findFirst();
+		return columns.stream().filter(c -> Objects.equals(c.name, column)).findFirst();
 	}
 
 	public Column getOrCreate(String column) {
-		Optional<Column> col = columns.stream().filter(c -> c.name == column).findFirst();
+		Optional<Column> col = columns.stream().filter(c -> Objects.equals(c.name, column)).findFirst();
 		if (col.isPresent()) {
 			return col.get();
 		}
@@ -85,7 +86,7 @@ public class DataFrame {
 	 * it will be created.
 	 */
 	public void addEntry(String column, Object value) {
-		Optional<Column> matchinColumn = columns.stream().filter(c -> c.name == column).findFirst();
+		Optional<Column> matchinColumn = columns.stream().filter(c -> Objects.equals(c.name, column)).findFirst();
 		if (matchinColumn.isPresent()) {
 			matchinColumn.get().addEntry(value);
 		} else {
@@ -96,7 +97,7 @@ public class DataFrame {
 	}
 
 	public Object getEntry(String column, Object key) {
-		Optional<Column> col = columns.stream().filter(c -> c.name == column).findFirst();
+		Optional<Column> col = columns.stream().filter(c -> Objects.equals(c.name, column)).findFirst();
 		if (col.isPresent()) {
 			return col.get().data.get(key);
 		}
