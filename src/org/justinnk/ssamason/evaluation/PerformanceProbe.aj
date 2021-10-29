@@ -45,9 +45,9 @@ public aspect PerformanceProbe {
 	}
 	
 	after(): call(public double Action.calculateRate())
-		|| call(private void org.justinnk.thesis.demo.mason.vanillasirs.Human.scheduleInfection())
-		|| call(private void org.justinnk.thesis.demo.mason.vanillasirs.Human.scheduleImmunityLoss())
-		|| call(private void org.justinnk.thesis.demo.mason.vanillasirs.Human.scheduleRecovery())
+		|| call(private void org.justinnk.ssamason.demo.mason.vanillasirs.Human.scheduleInfection())
+		|| call(private void org.justinnk.ssamason.demo.mason.vanillasirs.Human.scheduleImmunityLoss())
+		|| call(private void org.justinnk.ssamason.demo.mason.vanillasirs.Human.scheduleRecovery())
 	{
 		PerformanceMetrics.incStaticMetric("rateCalculations");
 	}
@@ -64,13 +64,13 @@ public aspect PerformanceProbe {
 	
 	after(): call(public double MersenneTwisterFast.nextDouble()) 
 		&& (within(StochasticSimulationAlgorithm+) 
-				|| within(org.justinnk.thesis.demo.mason.vanillasirs.Human)) {
+				|| within(org.justinnk.ssamason.demo.mason.vanillasirs.Human)) {
 		PerformanceMetrics.incStaticMetric("randomNumbers");
 	}
 	
 	after(): call(public void Effect.apply()) 
-		|| call(public void org.justinnk.thesis.demo.mason.vanillasirs.Human.recover())
-		|| call(public void org.justinnk.thesis.demo.mason.vanillasirs.Human.getInfected()) {
+		|| call(public void org.justinnk.ssamason.demo.mason.vanillasirs.Human.recover())
+		|| call(public void org.justinnk.ssamason.demo.mason.vanillasirs.Human.getInfected()) {
 		PerformanceMetrics.incStaticMetric("actionApplications");
 	}
 }
