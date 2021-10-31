@@ -25,19 +25,19 @@ public aspect ErrorSymbiont {
 		set(public * Agent+.*) && !@annotation(NoAgentAttribute);
 
 	pointcut timeAccess():
-		call(public double Schedule.getTime()) || call(public String Schedule.getTimestamp(*));
+		call(public double Schedule.getTime()) || call(public java.lang.String Schedule.getTimestamp(*));
 
-	declare error: inCondition() && attributeMutation():
-		"It is not allowed to mutate an attribute in the condition of an action.\n"
-		+ "Note: because of technical reasons, this is prohibited for all lambdas returning booleans in Agent-subclasses.";
-
-	declare error: inRate() && attributeMutation():
-		"It is not allowed to mutate an attribute in the rate of an action.\n"
-		+ "Note: because of technical reasons, this is prohibited for all lambdas returning doubles in Agent-subclasses.";
-
-	declare error: inRate() && timeAccess():
-		"Time-dependent rate functions are not allowed, since time-inhomogeneous CTMC are not yet supported."
-		+ "Note: because of technical reasons, this is prohibited for all lambdas returning doubles in Agent-subclasses.";
+//	declare error: inCondition() && attributeMutation():
+//		"It is not allowed to mutate an attribute in the condition of an action.\n"
+//		+ "Note: because of technical reasons, this is prohibited for all lambdas returning booleans in Agent-subclasses.";
+//
+//	declare error: inRate() && attributeMutation():
+//		"It is not allowed to mutate an attribute in the rate of an action.\n"
+//		+ "Note: because of technical reasons, this is prohibited for all lambdas returning doubles in Agent-subclasses.";
+//
+//	declare error: inRate() && timeAccess():
+//		"Time-dependent rate functions are not allowed, since time-inhomogeneous CTMC are not yet supported."
+//		+ "Note: because of technical reasons, this is prohibited for all lambdas returning doubles in Agent-subclasses.";
 
 	declare error: (inRate() || inCondition()) && call(public Edge Network.getEdge(*,*)):
 		"This method is not yet supported";

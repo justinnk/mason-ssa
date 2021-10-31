@@ -1,0 +1,187 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.justinnk.ssamason</groupId>
+        <artifactId>ssamason</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>demo</artifactId>
+    <packaging>jar</packaging>
+
+    <name>MASON-ABM-SSA Demo</name>
+    <description>A project demonstrating the use of the mason-abm-ssa extension.</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- to compile with javac -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.source}</source>
+                    <target>${java.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- to weave aspects using a fork, since the original is not updated,
+                    see https://github.com/nickwongdev/aspectj-maven-plugin -->
+                <groupId>com.nickwongdev</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>${aspectj.pluginversion}</version>
+                <configuration>
+                    <proc>none</proc>
+                    <complianceLevel>${java.source}</complianceLevel>
+                    <source>${java.source}</source>
+                    <target>${java.target}</target>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <verbose>true</verbose>
+                    <Xlint>error</Xlint>
+                    <encoding>UTF-8</encoding>
+                    <forceAjcCompile>false</forceAjcCompile>
+                    <!-- enable weaving for mason-internal classes -->
+                    <weaveDependencies>
+                        <weaveDependency>
+                            <groupId>cs.gmu.edu.eclab</groupId>
+                            <artifactId>mason</artifactId>
+                        </weaveDependency>
+                        <weaveDependency>
+                            <groupId>org.justinnk.ssamason</groupId>
+                            <artifactId>extension</artifactId>
+                        </weaveDependency>
+                    </weaveDependencies>
+                    <!-- include aspects from the ssa extension -->
+                    <aspectLibraries>
+                        <aspectLibrary>
+                            <groupId>org.justinnk.ssamason</groupId>
+                            <artifactId>aspects-base</artifactId>
+                        </aspectLibrary>
+                        <aspectLibrary>
+                            <groupId>org.justinnk.ssamason</groupId>
+                            <artifactId>aspects-nrm</artifactId>
+                        </aspectLibrary>
+                    </aspectLibraries>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- only weave after classes are compiled by javac -->
+<!--                        <phase>process-classes</phase>-->
+                        <goals>
+                            <goal>compile</goal>
+<!--                            <goal>test-compile</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.justinnk.ssamason</groupId>
+                        <artifactId>aspects-base</artifactId>
+                        <version>${revision}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.justinnk.ssamason</groupId>
+                        <artifactId>aspects-nrm</artifactId>
+                        <version>${revision}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!-- TODO: make packaging dependencies work with aspects -->
+<!--            <plugin>-->
+<!--&lt;!&ndash;                <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.3.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <archive>-->
+<!--                                <manifest>-->
+<!--                                    <mainClass>-->
+<!--                                        org.justinnk.ssamason.demo.ssamason.sir.SirModelWithUI-->
+<!--                                    </mainClass>-->
+<!--                                </manifest>-->
+<!--                            </archive>-->
+<!--                            <descriptorRefs>-->
+<!--                                <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                            </descriptorRefs>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>cs.gmu.edu.eclab</groupId>
+            <artifactId>mason</artifactId>
+        </dependency>
+        <!-- needed for charting -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jcommon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+        </dependency>
+        <!-- 3d visualisation -->
+        <dependency>
+            <groupId>java3d</groupId>
+            <artifactId>j3d-core</artifactId>
+        </dependency>
+        <!-- for imovie support -->
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jmf</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.justinnk.ssamason</groupId>
+            <artifactId>extension</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.justinnk.ssamason</groupId>
+            <artifactId>aspects-base</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.justinnk.ssamason</groupId>
+            <artifactId>aspects-nrm</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+</project>

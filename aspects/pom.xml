@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.justinnk.ssamason</groupId>
+        <artifactId>ssamason</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>aspects</artifactId>
+    <packaging>pom</packaging>
+
+    <name>MASON-ABM-SSA Aspects</name>
+    <description>The aspects used for tracking dependencies.</description>
+
+    <modules>
+        <module>aspects-base</module>
+        <module>aspects-nrm</module>
+        <module>aspects-odm</module>
+    </modules>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- to weave aspects using a fork, since the original is not updated,
+                        see https://github.com/nickwongdev/aspectj-maven-plugin -->
+                    <groupId>com.nickwongdev</groupId>
+                    <artifactId>aspectj-maven-plugin</artifactId>
+                    <version>${aspectj.pluginversion}</version>
+                    <configuration>
+                        <proc>none</proc>
+                        <complianceLevel>${java.source}</complianceLevel>
+                        <source>${java.source}</source>
+                        <target>${java.target}</target>
+                        <showWeaveInfo>false</showWeaveInfo>
+                        <verbose>true</verbose>
+                        <Xlint>error</Xlint>
+                        <encoding>UTF-8</encoding>
+                        <forceAjcCompile>false</forceAjcCompile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <!-- only weave after classes are compiled by javac -->
+                            <!--                        <phase>process-classes</phase>-->
+                            <goals>
+                                <goal>compile</goal>
+                                <!--                            <goal>test-compile</goal>-->
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.aspectj</groupId>
+                            <artifactId>aspectjtools</artifactId>
+                            <version>${aspectj.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.justinnk.ssamason</groupId>
+                <artifactId>extension</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

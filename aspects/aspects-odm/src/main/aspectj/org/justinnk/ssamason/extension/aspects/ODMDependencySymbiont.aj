@@ -1,8 +1,8 @@
 package org.justinnk.ssamason.extension.aspects;
 
 import org.justinnk.ssamason.extension.Action;
-import org.justinnk.ssamason.extension.Agent;
 import org.justinnk.ssamason.extension.SSASimState;
+import org.justinnk.ssamason.extension.Agent;
 import org.justinnk.ssamason.extension.ssa.OptimizedDirectMethod;
 
 import sim.field.network.Edge;
