@@ -43,7 +43,7 @@
                     <Xlint>error</Xlint>
                     <encoding>UTF-8</encoding>
                     <forceAjcCompile>false</forceAjcCompile>
-                    <!-- enable weaving for mason-internal classes -->
+                    <!-- enable weaving for mason-internal classes and extension classes -->
                     <weaveDependencies>
                         <weaveDependency>
                             <groupId>cs.gmu.edu.eclab</groupId>
@@ -81,16 +81,6 @@
                         <groupId>org.aspectj</groupId>
                         <artifactId>aspectjtools</artifactId>
                         <version>${aspectj.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.justinnk.ssamason</groupId>
-                        <artifactId>aspects-base</artifactId>
-                        <version>${revision}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.justinnk.ssamason</groupId>
-                        <artifactId>aspects-nrm</artifactId>
-                        <version>${revision}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -181,6 +171,11 @@
         <dependency>
             <groupId>org.justinnk.ssamason</groupId>
             <artifactId>aspects-nrm</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.justinnk.ssamason</groupId>
+            <artifactId>aspects-odm</artifactId>
             <version>${revision}</version>
         </dependency>
     </dependencies>
