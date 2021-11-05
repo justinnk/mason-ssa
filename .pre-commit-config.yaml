@@ -4,6 +4,7 @@ repos:
       rev: v1.1.10
       hooks:
         -   id: insert-license
+            # TODO: make pull request to identify to include .aj files as type
             types: [file]
             files: .+\/src\/.+\.(java|aj)$
             args:
