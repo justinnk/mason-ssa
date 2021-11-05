@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Kreikemeyer
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.justinnk.ssamason.extension.aspects;
 
 import org.justinnk.ssamason.extension.Action;
@@ -9,8 +33,8 @@ import sim.field.network.Edge;
 import sim.field.network.Network;
 import sim.util.Bag;
 
-/** Aspect that informs the NRM SSA about the dependencies. Separates the concern of optimisation from the rest of the code. 
- * 
+/** Aspect that informs the NRM SSA about the dependencies. Separates the concern of optimisation from the rest of the code.
+ *
  * 1. Initial Dependency Graph (Evaluation of every guard and rate)
  * 		- add a dependency from an action on every **attribute** that is accessed in rate() or guard()
  * 		- add a dependency from an action on every **edge** that is accessed  in rate() or guard()
@@ -37,10 +61,10 @@ import sim.util.Bag;
  *      - for all edges in removedEdges, remove them from the dependency graphs
  *      - for all actions in toReschedule, reschedule them and reinitialise their dependencies
  *      - for all agents in bornAgents, initialise them and their dependencies
- * 
+ *
  */
 public aspect NRMDependencySymbiont extends DependencySymbiont {
-	
+
 	/* can't use pertarget, because this would limit matching join points. */
 
 	private static boolean inStep = false;
@@ -49,36 +73,36 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 	private static boolean inInitAction = false;
 //	private static boolean inEdgeReschedule = false;
 	private NextReactionMethod nrm;
-	
+
 	/*
 	 * Pointcuts
 	 */
-	
+
 	/* Step of the nrm */
 	pointcut Step(NextReactionMethod nrm, Action currentAction):
 		call(public void NextReactionMethod.executeAction(..)) && args(currentAction) && target(nrm);
-	
+
 	/* In the control flow of the initialisation of the next reaction method */
 	/*pointcut inInit(NextReactionMethod nrm):
 		cflowbelow(execution(public void NextReactionMethod.init(SSASimState)) && target(nrm));*/
-	
+
 	/* In the control flow of the initialisation of an Action */
 	/*pointcut inInitAction(Action currentAction):
 		cflowbelow(execution(public void NextReactionMethod.initAction(..)) && args(currentAction));*/
-	
+
 	/*pointcut inInitAction2(NextReactionMethod nrm, Action currentAction):
 		cflowbelow(execution(public void NextReactionMethod.initAction(..)) && target(nrm) && args(currentAction));*/
-	
+
 	/* In the control flow of the step of the next reaction method */
 	/*pointcut inStep(NextReactionMethod nrm, Action currentAction):
 		cflowbelow(execution(void NextReactionMethod.executeAction(..)) && args(currentAction) && target(nrm));*/
-	
+
 	/* In the control flow of the rescheduling of an action in the next reaction method */
 	/*pointcut inReschedule(NextReactionMethod nrm, Action action, Action trigger):
 		cflowbelow(execution(void NextReactionMethod.rescheduleAction(..)) && args(action, trigger) && target(nrm));*/
-	
+
 	/* inStep */
-	before(NextReactionMethod nrm, Action currentAction): 
+	before(NextReactionMethod nrm, Action currentAction):
 		execution(void NextReactionMethod.executeAction(..)) && args(currentAction) && target(nrm)
 	{
 		inStep = true;
@@ -89,9 +113,9 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 	{
 		inStep = false;
 	}
-	
+
 	/* inReschedule */
-	before(NextReactionMethod nrm, Action currentAction, Action currentTrigger): 
+	before(NextReactionMethod nrm, Action currentAction, Action currentTrigger):
 		execution(void NextReactionMethod.rescheduleAction(..)) && args(currentAction, currentTrigger) && target(nrm)
 	{
 		inReschedule = true;
@@ -103,9 +127,9 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 	{
 		inReschedule = false;
 	}
-	
+
 	/* inInitAction */
-	before(NextReactionMethod nrm, Action currentAction): 
+	before(NextReactionMethod nrm, Action currentAction):
 		execution(public void NextReactionMethod.initAction(..)) && target(nrm) && args(currentAction)
 	{
 		inInitAction = true;
@@ -116,9 +140,9 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 	{
 		inInitAction = false;
 	}
-	
+
 	/* inInit */
-	before(NextReactionMethod nrm): 
+	before(NextReactionMethod nrm):
 		execution(public void NextReactionMethod.init(SSASimState)) && target(nrm)
 	{
 		inInit = true;
@@ -128,88 +152,88 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 	{
 		inInit = false;
 	}
-	
+
 	/*
 	 * Advices
 	 */
-	
+
 	/*
 	 * 1. Initial Dependency Graph
 	 */
-	
+
 	/* After an attribute of calledOn is accessed by calledBy in the control flow of the next reaction methods initialisation */
 	/* all getters in NRM -> init -> initAction -> Action.evaluateCondition() / Action.calculateRate() */
 	after (Agent calledOn, Agent calledBy):
 		AttributeAccess(calledOn, calledBy) && if(inInit && inInitAction) && if(inCondition || inRate)
 	{
-		/* That a getter is called during initialisation of the NRM means that the currently initialised action depends on the respective attribute. 
+		/* That a getter is called during initialisation of the NRM means that the currently initialised action depends on the respective attribute.
 		 * Add this fact to the dependency graph.
 		 */
 		handleAttributeAccess(nrm, currentAction, calledOn, thisJoinPointStaticPart);
 	}
-	
+
 	/* Access to edge */
-	after(Network network) returning(Bag edges): 
-		EdgeAccess(network) && if(inInit && inInitAction) && if(inRate || inCondition) 
+	after(Network network) returning(Bag edges):
+		EdgeAccess(network) && if(inInit && inInitAction) && if(inRate || inCondition)
 	{
 		handleEdgeAccess(nrm, currentAction, network, edges);
 	}
-	
+
 	/*
 	 * 2. Step (Execution of the imminent event)
 	 */
-	
+
 	/* 2.1 Attribute Mutation */
 	/* After an attribute of calledOn was mutated by calledBy in a step */
 	/* all setters in NRM -> step -> applyEffect() and not in an new Agent() call */
-	after(Agent calledOn, Agent calledBy) returning: 
+	after(Agent calledOn, Agent calledBy) returning:
 		AttributeMutation(calledOn, calledBy) && if(inStep && inEffect && !inNewAgent)
 	{
 		/* That a setter is called during the execution of an action means that an attribute changed.
-		 * Thus we have to retrieve all actions that depend on this attribute and possibly reschedule them. 
+		 * Thus we have to retrieve all actions that depend on this attribute and possibly reschedule them.
 		 */
 		handleAttributeMutation(this.nrm, currentAction, calledOn, calledBy, thisJoinPointStaticPart);
 		//System.out.println("Attribute mutated.");
 	}
-	
+
 	/* 2.2 Agent Removal */
 	/* After the kill method has been called on an agent in the control flow of an effect in an nrm step */
 	/* Agent.kill() in NRM -> step -> applyEffect() */
-	after(Agent agent): 
+	after(Agent agent):
 		RemoveAgent(agent) && if(inStep && inEffect)
 	{
 		handleAgentRemoval(this.nrm, agent);
 	}
-	
+
 	/* 2.3 Edge Removal */
 	/* Removal of an edge */
-	after(Edge edge, Network network): 
+	after(Edge edge, Network network):
 		EdgeRemoval(network, edge) && if(inStep && inEffect)
 	{
 		handleEdgeRemoval(this.nrm, edge, network);
 	}
-	
+
 	/* 2.4 Agent Addition */
 	/* After a new agent is instantiated in an actions effect */
 	/* new Agent() in NRM -> step -> Action.applyEffect() */
-	after(Agent newAgent): 
+	after(Agent newAgent):
 		NewAgent(newAgent) && if(inStep && inEffect)
 	{
 		handleAgentAddition(newAgent);
 	}
 	/* When a new agent is initialised. */
 	/* all getters in NRM -> initAction -> Action.evaluateCondition() / Action.calculateRate(), but not in init */
-	after(Agent calledOn, Agent calledBy): 
+	after(Agent calledOn, Agent calledBy):
 		AttributeAccess(calledOn, calledBy) && if(inInitAction && !inInit) && if(inCondition || inRate)
 	{
 		handleAttributeAccess(nrm, currentAction, calledOn, thisJoinPointStaticPart);
 	}
-	after(Network network) returning(Bag edges): 
+	after(Network network) returning(Bag edges):
 		EdgeAccess(network) && if(inInitAction && !inInit) && if(inCondition || inRate)
 	{
 		handleEdgeAccess(this.nrm, currentAction, network, edges);
 	}
-	
+
 	/* 2.5 Edge Addition */
 	/* Addition of an edge */
 	after(Edge edge, Network network):
@@ -217,31 +241,31 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 	{
 		handleEdgeAddition(this.nrm, edge, network);
 	}
-	
+
 	/*
 	 * 3. After Step
 	 */
-	
+
 	/* After an attribute was accessed in reschedule */
-	after(Agent calledOn, Agent calledBy): 
+	after(Agent calledOn, Agent calledBy):
 		AttributeAccess(calledOn, calledBy) && if(inReschedule) && if(inCondition || inRate)
 	{
 		handleAttributeAccess(this.nrm, currentAction, calledOn, thisJoinPointStaticPart);
 	}
 	/* After an edge was accessed in reschedule */
-	after(Network network) returning(Bag edges): 
+	after(Network network) returning(Bag edges):
 		//get(public Bag Network.IndexOutIn.in) && this(network) && if(inReschedule && inEdgeReschedule)
 		EdgeAccess(network) && if(inReschedule) && if(inCondition || inRate)
 	{
 		handleEdgeAccess(this.nrm, currentAction, network, edges);
 	}
-	
+
 	/*
-	 * Conclusion of a Step 
+	 * Conclusion of a Step
 	 */
-	
+
 	/* After a step of the NRM concluded. */
-	after(NextReactionMethod nrm, Action currentAction) returning: 
+	after(NextReactionMethod nrm, Action currentAction) returning:
 		Step(nrm, currentAction)
 	{
 		toReschedule.add(currentAction);
@@ -273,7 +297,7 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 				nrm.rescheduleAction(dep, currentAction);
 			}
 		}
-		/* 2.4 */ 
+		/* 2.4 */
 		/* Loop through all new agents and initialise them. */
 		for (Agent agent : addedAgents)
 		{
@@ -290,7 +314,7 @@ public aspect NRMDependencySymbiont extends DependencySymbiont {
 		removedEdges.clear();
 		toReschedule.clear();
 		addedAgents.clear();
-		
+
 //		nrm.attributeDependencies.printActionDependencies();
 //		nrm.edgeDependencies.printActionDependencies();
 //		System.out.println("------------------------------");

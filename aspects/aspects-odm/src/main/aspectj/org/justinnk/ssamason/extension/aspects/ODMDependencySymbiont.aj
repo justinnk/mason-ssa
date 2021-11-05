@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Kreikemeyer
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.justinnk.ssamason.extension.aspects;
 
 import org.justinnk.ssamason.extension.Action;
@@ -9,8 +33,8 @@ import sim.field.network.Edge;
 import sim.field.network.Network;
 import sim.util.Bag;
 
-/** Aspect that informs the ODM SSA about the dependencies. Separates the concern of optimisation from the rest of the code. 
- *  
+/** Aspect that informs the ODM SSA about the dependencies. Separates the concern of optimisation from the rest of the code.
+ *
  * 1. Initial Dependency Graph (Evaluation of every guard and rate)
  * 		- add a dependency from an action on every **attribute** that is accessed in rate() or guard()
  * 		- add a dependency from an action on every **edge** that is accessed  in rate() or guard()
@@ -37,7 +61,7 @@ import sim.util.Bag;
  *      - for all edges in removedEdges, remove them from the dependency graphs
  *      - for all actions in toReschedule, update the rate sum accordingly and reinitialise their dependencies
  *      - for all agents in bornAgents, initialise them and their dependencies
- * 
+ *
  */
 public aspect ODMDependencySymbiont extends DependencySymbiont {
 
@@ -46,7 +70,7 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 	private static boolean inInit = false;
 	private static boolean inInitAction = false;
 	private OptimizedDirectMethod odm;
-	
+
 	/*
 	 * Pointcuts
 	 */
@@ -65,7 +89,7 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 
 	/*pointcut inInitAction2(OptimizedDirectMethod odm, Action currentAction):
 		cflow(execution(public double OptimizedDirectMethod.initAction(..)) && target(odm) && args(currentAction));*/
-	
+
 	/* In the control flow of the step of the next reaction method */
 	/*pointcut inStep(OptimizedDirectMethod odm, Action currentAction):
 			cflow(execution(void OptimizedDirectMethod.executeAction(..)) && args(currentAction) && target(odm));*/
@@ -75,7 +99,7 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 			cflow(execution(void OptimizedDirectMethod.updateRateSum(..)) && args(action, trigger) && target(odm));*/
 
 	/* inStep */
-	before(OptimizedDirectMethod odm, Action currentAction): 
+	before(OptimizedDirectMethod odm, Action currentAction):
 		execution(void OptimizedDirectMethod.executeAction(..)) && args(currentAction) && target(odm)
 	{
 		inStep = true;
@@ -86,9 +110,9 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 	{
 		inStep = false;
 	}
-	
+
 	/* inReschedule */
-	before(OptimizedDirectMethod odm, Action currentAction): 
+	before(OptimizedDirectMethod odm, Action currentAction):
 		execution(void OptimizedDirectMethod.updateRateSum(..)) && args(currentAction) && target(odm)
 	{
 		inReschedule = true;
@@ -99,9 +123,9 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 	{
 		inReschedule = false;
 	}
-	
+
 	/* inInitAction */
-	before(OptimizedDirectMethod odm, Action currentAction): 
+	before(OptimizedDirectMethod odm, Action currentAction):
 		execution(public double OptimizedDirectMethod.initAction(..)) && target(odm) && args(currentAction)
 	{
 		inInitAction = true;
@@ -112,9 +136,9 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 	{
 		inInitAction = false;
 	}
-	
+
 	/* inInit */
-	before(OptimizedDirectMethod odm): 
+	before(OptimizedDirectMethod odm):
 		execution(public void OptimizedDirectMethod.init(SSASimState)) && target(odm)
 	{
 		inInit = true;
@@ -124,87 +148,87 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 	{
 		inInit = false;
 	}
-	
+
 	/*
 	 * Advices
 	 */
-	
+
 	/*
 	 * 1. Initial Dependency Graph
 	 */
-	
+
 	/* After an attribute of calledOn is accessed by calledBy in the control flow of the next reaction methods initialisation */
 	/* all getters in NRM -> init -> initAction -> Action.evaluateCondition() / Action.calculateRate() */
 	after (Agent calledOn, Agent calledBy):
 		AttributeAccess(calledOn, calledBy) && if(inInit && inInitAction) && if(inCondition || inRate)
 	{
-		/* That a getter is called during initialisation of the NRM means that the currently initialised action depends on the respective attribute. 
+		/* That a getter is called during initialisation of the NRM means that the currently initialised action depends on the respective attribute.
 		 * Add this fact to the dependency graph.
 		 */
 		handleAttributeAccess(odm, currentAction, calledOn, thisJoinPointStaticPart);
 	}
-	
+
 	/* Access to edge */
-	after(Network network) returning(Bag edges): 
+	after(Network network) returning(Bag edges):
 		EdgeAccess(network) && if(inInit && inInitAction) && if(inRate || inCondition)
 	{
 		handleEdgeAccess(odm, currentAction, network, edges);
 	}
-	
+
 	/*
 	 * 2. Step (Execution of the imminent event)
 	 */
-	
+
 	/* 2.1 Attribute Mutation */
 	/* After an attribute of calledOn was mutated by calledBy in a step */
 	/* all setters in NRM -> step -> applyEffect() and not in an new Agent() call */
-	after(Agent calledOn, Agent calledBy) returning: 
+	after(Agent calledOn, Agent calledBy) returning:
 		AttributeMutation(calledOn, calledBy) && if(inStep && inEffect && !inNewAgent)
 	{
 		/* That a setter is called during the execution of an action means that an attribute changed.
-		 * Thus we have to retrieve all actions that depend on this attribute and possibly reschedule them. 
+		 * Thus we have to retrieve all actions that depend on this attribute and possibly reschedule them.
 		 */
 		handleAttributeMutation(this.odm, currentAction, calledOn, calledBy, thisJoinPointStaticPart);
 	}
-	
+
 	/* 2.2 Agent Removal */
 	/* After the kill method has been called on an agent in the control flow of an effect in an odm step */
 	/* Agent.kill() in NRM -> step -> applyEffect() */
-	after(Agent agent): 
+	after(Agent agent):
 		RemoveAgent(agent) && if(inStep && inEffect)
 	{
 		handleAgentRemoval(odm, agent);
 	}
-	
+
 	/* 2.3 Edge Removal */
 	/* Removal of an edge */
-	after(Edge edge, Network network): 
+	after(Edge edge, Network network):
 		EdgeRemoval(network, edge) && if(inStep && inEffect)
 	{
 		handleEdgeRemoval(odm, edge, network);
 	}
-	
+
 	/* 2.4 Agent Addition */
 	/* After a new agent is instantiated in an actions effect */
 	/* new Agent() in NRM -> step -> Action.applyEffect() */
-	after(Agent newAgent): 
+	after(Agent newAgent):
 		NewAgent(newAgent) && if(inStep && inEffect)
 	{
 		handleAgentAddition(newAgent);
 	}
 	/* When a new agent is initialised. */
 	/* all getters in NRM -> initAction -> Action.evaluateCondition() / Action.calculateRate(), but not in init */
-	after(Agent calledOn, Agent calledBy): 
+	after(Agent calledOn, Agent calledBy):
 		AttributeAccess(calledOn, calledBy) && if(inInitAction && !inInit) && if(inCondition || inRate)
 	{
 		handleAttributeAccess(odm, currentAction, calledOn, thisJoinPointStaticPart);
 	}
-	after(Network network) returning(Bag edges): 
+	after(Network network) returning(Bag edges):
 		EdgeAccess(network) && if(inInitAction && !inInit) && if(inCondition || inRate)
 	{
 		handleEdgeAccess(this.odm, currentAction, network, edges);
 	}
-	
+
 	/* 2.5 Edge Addition */
 	/* Addition of an edge */
 	after(Edge edge, Network network):
@@ -212,30 +236,30 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 	{
 		handleEdgeAddition(this.odm, edge, network);
 	}
-	
+
 	/*
 	 * 3. After Step
 	 */
-	
+
 	/* After an attribute was accessed in reschedule */
-	after(Agent calledOn, Agent calledBy): 
+	after(Agent calledOn, Agent calledBy):
 		AttributeAccess(calledOn, calledBy) && if(inReschedule)
 	{
 		handleAttributeAccess(this.odm, currentAction, calledOn, thisJoinPointStaticPart);
 	}
 	/* After an edge was accessed in reschedule */
-	after(Network network) returning(Bag edges): 
+	after(Network network) returning(Bag edges):
 		EdgeAccess(network) && if(inReschedule)
 	{
 		handleEdgeAccess(this.odm, currentAction, network, edges);
 	}
-	
+
 	/*
-	 * Conclusion of a Step 
+	 * Conclusion of a Step
 	 */
-	
+
 	/* After a step of the NRM concluded. */
-	after(OptimizedDirectMethod odm, Action currentAction) returning: 
+	after(OptimizedDirectMethod odm, Action currentAction) returning:
 		Step(odm, currentAction)
 	{
 		toReschedule.add(currentAction);
@@ -284,7 +308,7 @@ public aspect ODMDependencySymbiont extends DependencySymbiont {
 		removedEdges.clear();
 		toReschedule.clear();
 		addedAgents.clear();
-		
+
 		/* Debug */
 //		System.out.println("---------------------------");
 //		System.out.println("step finished. New State: ");

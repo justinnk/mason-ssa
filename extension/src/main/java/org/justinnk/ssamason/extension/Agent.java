@@ -1,101 +1,117 @@
-package org.justinnk.ssamason.extension;
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Kreikemeyer
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
-import sim.engine.SimState;
+package org.justinnk.ssamason.extension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import sim.engine.SimState;
 
 /** A base class for every agent of a MASON simulation using an SSA. */
 public class Agent {
 
-//	public static List<Agent> AgentInstances = new ArrayList<Agent>();
-	public static int InternalNumAgents = 0;
-	public static boolean enableAgentLogging = true;
+  //	public static List<Agent> AgentInstances = new ArrayList<Agent>();
+  public static int InternalNumAgents = 0;
+  public static boolean enableAgentLogging = true;
 
-	/**
-	 * Internal reference to the simulation state. Can be used in the behaviour
-	 * rules.
-	 */
-	protected SimState model;
+  /** Internal reference to the simulation state. Can be used in the behaviour rules. */
+  protected SimState model;
 
-	/** List of actions (i.e. behaviour rules) of this agent. */
-	private List<Action> actions = new ArrayList<>();
+  /** List of actions (i.e. behaviour rules) of this agent. */
+  private List<Action> actions = new ArrayList<>();
 
-	/** Add a new behaviour rule to this agent. */
-	protected void addAction(Action action) {
-		/* actions must have names unique within agents. */
-		if (this.actions.stream().anyMatch((a) -> Objects.equals(a.getName(), action.getName()))) {
-			System.err.println("Error: Agent actions must have unique names.");
-			System.exit(1);
-		}
-		/* Do not forget to claim ownership :) */
-		action.setOwner(this);
-		actions.add(action);
-	}
+  /** Add a new behaviour rule to this agent. */
+  protected void addAction(Action action) {
+    /* actions must have names unique within agents. */
+    if (this.actions.stream().anyMatch((a) -> Objects.equals(a.getName(), action.getName()))) {
+      System.err.println("Error: Agent actions must have unique names.");
+      System.exit(1);
+    }
+    /* Do not forget to claim ownership :) */
+    action.setOwner(this);
+    actions.add(action);
+  }
 
-	/** @return A list of behaviour rules of this agent. */
-	public List<Action> getActions() {
-		return actions;
-	}
+  /** @return A list of behaviour rules of this agent. */
+  public List<Action> getActions() {
+    return actions;
+  }
 
-	/** A unique identifier for this agent. */
-	private int id;
+  /** A unique identifier for this agent. */
+  private int id;
 
-	/** @return The unique identifier of this agent. */
-	public int getId() {
-		return id;
-	}
+  /** @return The unique identifier of this agent. */
+  public int getId() {
+    return id;
+  }
 
-	public Agent(SimState model) {
-		this.model = model;
-		this.id = InternalNumAgents;
-		InternalNumAgents++;
-//		AgentInstances.add(this);
-	}
+  public Agent(SimState model) {
+    this.model = model;
+    this.id = InternalNumAgents;
+    InternalNumAgents++;
+    //		AgentInstances.add(this);
+  }
 
-	/** Remove this agent from the simulation. */
-	public void kill() {
-//		AgentInstances.remove(this);
-		for (Action a : actions) {
-			Action.ActionInstances.remove(a);
-		}
-	}
+  /** Remove this agent from the simulation. */
+  public void kill() {
+    //		AgentInstances.remove(this);
+    for (Action a : actions) {
+      Action.ActionInstances.remove(a);
+    }
+  }
 
-	/** Internal method to prepend the agents id in front of message. */
-	protected void log(String message) {
-		if (enableAgentLogging)
-			System.out.println("Agent " + id + ": " + message);
-	}
+  /** Internal method to prepend the agents id in front of message. */
+  protected void log(String message) {
+    if (enableAgentLogging) System.out.println("Agent " + id + ": " + message);
+  }
 
-	/** Print this agents id. */
-	@Override
-	public String toString() {
-		return String.valueOf(id);
-	}
+  /** Print this agents id. */
+  @Override
+  public String toString() {
+    return String.valueOf(id);
+  }
 
-	/*
-	 * Auto generated by Eclipse IDE for comparison. Agents can be uniquely
-	 * identified by their id.
-	 */
+  /*
+   * Auto generated by Eclipse IDE for comparison. Agents can be uniquely
+   * identified by their id.
+   */
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + id;
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Agent other = (Agent) obj;
-		return id == other.id;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    Agent other = (Agent) obj;
+    return id == other.id;
+  }
 }

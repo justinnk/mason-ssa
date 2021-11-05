@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Kreikemeyer
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.justinnk.ssamason.extension.graphs;
 
 import sim.field.network.Network;
@@ -9,43 +33,39 @@ import sim.util.Bag;
  */
 public class GridGraphCreator extends GraphCreator {
 
-	/** Create a new GirdGraphCreator instance. */
-	public GridGraphCreator() {
-		/* The seed is not important, as this creator is deterministic. */
-		super(42);
-	}
+  /** Create a new GirdGraphCreator instance. */
+  public GridGraphCreator() {
+    /* The seed is not important, as this creator is deterministic. */
+    super(42);
+  }
 
-	/**
-	 * Connect the nodes found in network according to a von-Neumann-neighbourhood.
-	 * <br>
-	 * <b>Important Note 1</b>: This is for use with an undirected graph, where the
-	 * direction of edges does not matter. For information: the edges are directed
-	 * bottom to top and left to right. <br>
-	 * <b>Important Note 2</b>: All weights are set to 1.0
-	 * 
-	 * @param network The network to build the graph with. Has to already contain
-	 *                the nodes.
-	 */
-	@Override
-	public void create(Network network) {
-		Bag nodes = network.getAllNodes();
-		int size = nodes.size();
-		int rows = (int) Math.sqrt(size);
-		for (int i = 0; i < size; i++) {
-			Object node = nodes.get(i);
-			/* If we are not the first node of this row */
-			if (i > 0 && i % rows != 0) {
-				/* connect us to our neighbour above */
-				Object nodeT = nodes.get(i - 1);
-				network.addEdge(node, nodeT, 1.0);
-			}
-			/* If we are not in the last row */
-			if (i + rows < size) {
-				/* connect us to our neighbour on the right */
-				Object nodeR = nodes.get(i + rows);
-				network.addEdge(node, nodeR, 1.0);
-			}
-		}
-	}
-
+  /**
+   * Connect the nodes found in network according to a von-Neumann-neighbourhood. <br>
+   * <b>Important Note 1</b>: This is for use with an undirected graph, where the direction of edges
+   * does not matter. For information: the edges are directed bottom to top and left to right. <br>
+   * <b>Important Note 2</b>: All weights are set to 1.0
+   *
+   * @param network The network to build the graph with. Has to already contain the nodes.
+   */
+  @Override
+  public void create(Network network) {
+    Bag nodes = network.getAllNodes();
+    int size = nodes.size();
+    int rows = (int) Math.sqrt(size);
+    for (int i = 0; i < size; i++) {
+      Object node = nodes.get(i);
+      /* If we are not the first node of this row */
+      if (i > 0 && i % rows != 0) {
+        /* connect us to our neighbour above */
+        Object nodeT = nodes.get(i - 1);
+        network.addEdge(node, nodeT, 1.0);
+      }
+      /* If we are not in the last row */
+      if (i + rows < size) {
+        /* connect us to our neighbour on the right */
+        Object nodeR = nodes.get(i + rows);
+        network.addEdge(node, nodeR, 1.0);
+      }
+    }
+  }
 }

@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Justin Kreikemeyer
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.justinnk.ssamason.extension.aspects;
 
 import java.util.ArrayList;
@@ -20,29 +44,29 @@ public abstract aspect DependencySymbiont{
 	/*
 	 * Fields
 	 */
-	
+
 	/*
 	 * The following have to be set, because some pointcuts may apply multiple times
 	 * in the same control flow. This is because either the modeller uses multiple
 	 * or redundant attribute assignments or there is no way (that I am aware of) to
 	 * define a more specific pointcut.
 	 */
-	
+
 	/**
 	 * List of actions to reschedule because of their dependency on an attribute
 	 * change in the current action execution.
 	 */
 	HashSet<Action>toReschedule=new HashSet<Action>();
-	
+
 	/** List of agents that were removed during the current action execution. */
 	HashSet<Agent>removedAgents=new HashSet<Agent>();
-	
+
 	/** List of edges that were removed during the current action execution. */
 	HashSet<Edge>removedEdges=new HashSet<Edge>();
-	
+
 	/** List of agents that were introduced during the current action execution. */
 	HashSet<Agent>addedAgents=new HashSet<Agent>();
-	
+
 	/*
 	 * These fields are part of a workaround that eliminates the need for cflow. The
 	 * old pointcuts can still be found commented out below. It was found that the
@@ -53,25 +77,25 @@ public abstract aspect DependencySymbiont{
 	protected static boolean inCondition=false;
 	protected static boolean inRate=false;
 	protected static boolean inNewAgent=false;
-	
+
 	public static Action currentAction=null;
-	
+
 	/*
 	 * Pointcuts
 	 */
-	
+
 	//	/** In the control flow of applying an effect */
 	//	/pointcut inEffect():
 	//		cflow(execution(void Action.applyEffect()));*
-	//	
+	//
 	//	/** In the control flow of evaluating a guard expression */
 	//	pointcut inCondition():
 	//		cflow(execution(boolean Action.evaluateCondition()));
-	//	
+	//
 	//	/** In the control flow of calculating a rate expression */
 	//	pointcut inRate():
 	//		cflow(execution(double Action.calculateRate()));
-	
+
 	/** When an Agent gets instantiated. */
 	pointcut NewAgent(Agent newAgent):
 		initialization(Agent+.new(..)) && target(newAgent);
@@ -102,13 +126,13 @@ public abstract aspect DependencySymbiont{
 		||call(public Bag Network.getEdgesIn(*))
 		||call(public Bag Network.getEdges(*,*)))
 		&& target(network);
-	
+
 	/* TODO: Edge getEdge(..) */
-	
+
 	/*
 	 * Advice for the cflow-workaround
 	 */
-	
+
 	/* inEffect */
 	before(): execution(void Action.applyEffect()) {
 		inEffect = true;
@@ -132,7 +156,7 @@ public abstract aspect DependencySymbiont{
 	after():execution(double Action.calculateRate()) {
 		inRate = false;
 	}
-	
+
 	/* inNewAgent */
 	before():NewAgent(*) {
 		inNewAgent = true;
@@ -140,11 +164,11 @@ public abstract aspect DependencySymbiont{
 	after()returning:NewAgent(*) {
 		inNewAgent = false;
 	}
-	
+
 	/*
 	 * Methods to handle the different scenarios of the SSA
 	 */
-	
+
 	protected void handleAttributeAccess(DependencyBasedSSA ssa, Action currentAction, Agent calledOn,
 			JoinPoint.StaticPart jp) {
 		ssa.attributeDependencies.addDependency(currentAction, jp.getSignature().toShortString(), calledOn);

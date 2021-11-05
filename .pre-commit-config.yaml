@@ -1,0 +1,36 @@
+repos:
+  # add license notice
+  -   repo: https://github.com/Lucas-C/pre-commit-hooks
+      rev: v1.1.10
+      hooks:
+        -   id: insert-license
+            types: [file]
+            files: .+\/src\/.+\.(java|aj)$
+            args:
+              - --license-filepath
+              - LICENSE
+              - --comment-style
+              - /*| *| */
+  # general hooks
+  -   repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v2.3.0
+      hooks:
+        -   id: check-yaml
+        -   id: end-of-file-fixer
+        -   id: trailing-whitespace
+  # formatting
+  -   repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+      rev: v2.2.0
+      hooks:
+        -  id: pretty-format-java
+           args: [--autofix]
+  # maven build and test
+  -   repo: https://github.com/ejba/pre-commit-maven
+      rev: v0.3.2
+      hooks:
+        -   id: maven-compile
+        -   id: maven-test
+#  -   repo: https://github.com/kontrolilo/kontrolilo
+#      rev: v2.1.0
+#      hooks:
+#        - id: license-check-maven
