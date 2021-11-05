@@ -23,6 +23,30 @@
 
     <name>MASON-ABM-SSA</name>
     <description>Creating fast agent-based models utilising SSA in MASON.</description>
+    <url>https://github.com/justinnk/mason-abm-ssa</url>
+    <inceptionYear>2021</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/justinnk/mason-abm-ssa/blob/main/LICENSE</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Justin Kreikemeyer</name>
+<!--            <email></email>-->
+<!--            <organization></organization>-->
+            <organizationUrl>https://github.com/justinnk</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/justinnk/mason-abm-ssa.git</connection>
+        <developerConnection>scm:git:ssh://github.com:justinnk/mason-abm-ssa.git</developerConnection>
+        <url>https://github.com/justinnk/mason-abm-ssa/tree/main</url>
+    </scm>
 
     <modules>
         <module>extension</module>
