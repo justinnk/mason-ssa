@@ -1,0 +1,212 @@
+\documentclass[a4paper, 12pt, bibliography=numbered]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.4,0}
+\definecolor{codebackcolour}{rgb}{0.93,0.93,0.93}
+\definecolor{codered}{rgb}{0.4,0.0,0.0}
+\definecolor{codeblue}{rgb}{0.0,0.4,0.4}
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+    aboveskip=0.5cm,
+    belowskip=0.5cm,
+    frame=single,
+    backgroundcolor=\color{codebackcolour},
+    commentstyle=\itshape\color{codegreen},
+    keywordstyle=\normalsize\bfseries\color{codeblue},
+    numberstyle=\small\ttfamily,
+    stringstyle=\color{codered},
+    basicstyle=\ttfamily\small,
+    %breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    %keepspaces=true,
+    numbers=left,
+    numbersep=0.5cm,
+    %showspaces=false,
+    showstringspaces=true,
+    %showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+\lstdefinelanguage{AspectJ}[]{Java}{
+    morekeywords={
+      declare, pointcut, aspect, before,
+      around, after, returning, throwing,
+      call, execution, this, target, args,
+      within, withincode, get, set, initialization,
+      preinitialization, staticinitialization, handler,
+      adviceexecution, cflow, cflowbelow, if, proceed,
+      Agent, Util, DependencyBasedSSA, Action, JoinPoint,
+      thisJoinPointStaticPart, AttributeDependencyGraph, String,Network,jp,StochasticSimulationAlgorithm,MersenneTwister,NextReactionMethod,Bag},
+    moredelim=[is][\textcolor{codeblue}]{\%\%}{\%\%},
+    moredelim=[il][\textcolor{codeblue}]{§§}
+}
+
+
+\title{Tutorial on Using the SSA MASON Extension}
+
+\author{Justin Kreikemeyer}
+
+\begin{document}
+
+\maketitle
+
+This tutorial will give a very brief overview of how to define a model using the prototype of the SSA MASON extension introduced in this thesis. The SIR model described in \autoref{sec:performance_evaluation} is used as an example.
+
+The first step is very similar to pure MASON: A class is defined, which manages the model and simulation state (\autoref{lst:tut:base}). We will create a new class called \texttt{SirModel}, which inherits from the base class \texttt{SSASimState}. This is a subclass of MASON's \texttt{SimState}, which would normally be used as a base class. We need to provide a constructor with one argument \texttt{seed}, which will also set the SSA to be used by default (In this case, the \texttt{FirstReactionMethod} is chosen). The \texttt{SSASimState} also provides a second constructor, which can be used to set the simulator when instantiating the model. Furthermore, we need to implement the method \texttt{start()}, which will handle the initialisation of the simulation. To run our model, we also provide a main method, like it is usual with MASON.
+
+\begin{lstlisting}[label=lst:tut:base,caption={The basis of our SIR model.},language=Java]
+package org.tutorial;
+import org.justinnk.ssamason.extension.*;
+
+class SirModel extends SSASimState {
+
+    public static void main(String[] args) {
+        doLoop(SirModel.class, args);
+        System.exit(0);
+    }
+
+    /* model parameters/fields... */
+
+    public SirModel(long seed) {
+        super(seed, new FirstReactionMethod());
+    }
+    public void start() {
+        super.start(); /* model initialisation... */
+    }
+}
+\end{lstlisting}
+
+We now need to add some structures to our model, which provide the environment for our agents (\autoref{lst:tut:environment}). In our SIR model, the environment will consist of a \texttt{ContinuousSpace2D} for placing the agents on a grid for visualisation and an (undirected) \texttt{Network} of the contact relations. We also use a graph creator from the SSA MASON extension to initialise the edges of our network.
+
+\begin{lstlisting}[label=lst:tut:environment,caption={The environment for our agents.},language=Java]
+public Continuous2D world = new Continuous2D(1.0, 100.0, 100.0);
+public Network contacts = new Network(false);
+public GraphCreator graph = new GridGraphCreator();
+\end{lstlisting}
+
+We will also add a couple of parameters to the model (\autoref{lst:tut:parameters}). By using getters and setters, these can also be discovered and adjusted through the MASON GUI. The \texttt{dom}-prefix can be used to define a maximum slider value for the initially infected humans.
+
+\begin{lstlisting}[label=lst:tut:parameters,caption={Parameters of the model.},language=Java]
+private double infectionRate = 1.0;
+public double getInfectionRate() { return infectionRate; }
+public void setInfectionRate(double rate) { infectionRate = rate; }
+private double recoveryRate = 0.5; /* getters and setters... */
+private int numHumans = 100; /* getters and setters... */
+private int initialInfected = 1; /* getters and setters... */
+public Object domInitialInfected() {
+	return new Interval(0, numHumans);
+}
+\end{lstlisting}
+
+So far, the process was very similar to MASON. However, defining agents is a little different. A new agent can be created, by introducing a class, which inherits from the base class \texttt{Agent} (\autoref{lst:tut:human}). In our case, we define the class \texttt{Human}, which represents a single human in our SIR model. It will have one public attribute, the \texttt{infectionState}. In general, fields that should be tracked by the SSAs that use dependencies must be public fields of an atomic type, like an \texttt{Integer}. Public fields within agents, which should not be tracked by the SSA, can be marked with the annotation \texttt{@NoAgentAttribute}. In this case, the infection state is of an \texttt{enum} type, which has the entries \texttt{SUSCEPTIBLE}, \texttt{INFECTIOUS} and \texttt{RECOVERED}.
+
+\begin{lstlisting}[label=lst:tut:human,caption={The basis of our Human agent.},language=Java]
+package org.tutorial;
+import org.justinnk.ssamason.extension.*;
+
+class Human extends Agent {
+    public enum InfectionState {
+        SUSCEPTIBLE, INFECTIOUS, RECOVERED
+    };
+
+    public InfectionState infectionState = InfectionState.SUSCEPTIBLE;
+
+    public Human(SSASimState model) {
+        super(model); /* actions go here */
+    }
+}
+\end{lstlisting}
+
+The human agent has no actions yet, so it won't contribute to the simulation. We change that by adding two actions ``infection action'' and ``recovery action'' in the constructor (\autoref{lst:tut:actions}).
+
+\begin{lstlisting}[label=lst:tut:actions,caption={The actions of our Human agent.},language=Java]
+/* cast the state for easy access */
+SirModel state = (SirModel)model;
+/* get infected with a certain rate depending on the contacts */
+this.addAction(new Action(
+    () -> this.infectionState == InfectionState.SUSCEPTIBLE,
+    () -> {
+        log("caught infection at " + model.schedule.getTime());
+        this.infectionState = InfectionState.INFECTIOUS;
+    },
+    () -> {
+        return state.getInfectionRate() * getInfectiousNeighbours();
+    },
+    "infection action"
+));
+/* Recover at a certain rate if infected. */
+this.addAction(new Action(
+    () -> this.infectionState == InfectionState.INFECTIOUS,
+    () -> {
+        log("recovered at " + model.schedule.getTime());
+        this.infectionState = InfectionState.RECOVERED;
+    },
+    () -> state.getRecoveryRate(),
+    "recovery action"
+));
+\end{lstlisting}
+
+The actions are constructed by passing three lambda functions and an optional name (which is only used for debugging): the \texttt{Guard} expression, the \texttt{Effect} and the \texttt{RateExpression}.
+
+The \textit{guard} returns a boolean expression determining whether the action is applicable in the current simulation/agent state or not. When using a dependency-based SSA (\texttt{NextReactionMethod} or \texttt{OptimizedDirectMethod}), it may use access to the edges of a network defined in the model, the agent's own attributes or other agents' attributes. Other agents must be discovered by querying the network. Other than access to constant fields of any variety, like a model parameter, no further dependencies are allowed. When using a parameter adjustable through the gui, also bare in mind that changing it during the simulation is not yet supported. Especially, access to the current simulation time is not allowed in the current version.
+
+The \textit{effect} is a function, which describes how the action alters the simulation state. No restrictions apply regarding the access to other agents or the simulation state. The effect does not return anything (void).
+
+The \textit{rate} is used to determine how often (at which rate) the effect is executed in case the guard evaluates to \texttt{true}. The same restrictions as for the guard apply. In the rate function for our human, we use the function \texttt{getInfectiousNeighbours}, which returns the number of infectious contacts of our agent (\autoref{lst:tut:infectiousNeighbours}).
+
+\begin{lstlisting}[label=lst:tut:infectiousNeighbours,caption={A function for determining the number of infectious contacts of the current agent.},language=Java]
+/** Retrieve the number of infectious neighbours. */
+private int getInfectiousNeighbours() {
+    Bag contacts = ((SirModel) model).contacts.getEdges(this, null);
+    int numInfectiousContacts = 0;
+    for (int contact = 0; contact < contacts.size(); contact++) {
+        Human contactPerson = (Human) ((Edge) contacts.get(contact)).getOtherNode(this);
+        if (contactPerson.infectionState == InfectionState.INFECTIOUS) {
+            numInfectiousContacts += 1;
+        }
+    }
+    return numInfectiousContacts;
+}
+\end{lstlisting}
+
+The restrictions mentioned here are likely not exhaustive. Despite the early state of development, some of them are already enforced. For example, an error is thrown if the simulation time is accessed in a rate or guard. However, this first prototype is very limited in terms of notifying the user of mistakes that would break the dependency-based SSAs, so a fundamental understanding of the extension and the dependency maintenance is required. It should be mentioned that other SSAs, like the first reaction method, are not limited by these restrictions, but slower for systems with high locality of the effects (like our grid-based SIR model).
+
+We can use the \texttt{log} function of the agent class to print information on the console, which will be prepended by the agents id for identification. A unique id is determined automatically when instantiating and agent.
+
+With the human agent completed, we define how the environment is initialised in the start method of our model (\autoref{lst:tut:initialisation}).
+
+\begin{lstlisting}[label=lst:tut:initialisation,caption={The initialisation of our environment in the start method of the model.},language=Java]
+world.clear();
+contacts.clear();
+for (int i = 0; i < numHumans; i++) {
+    Human h = new Human(this);
+    /* Set initial infection */
+    if (i < initialInfected) {
+        h.infectionState = InfectionState.INFECTIOUS;
+    }
+    /* (visually) arrange humans on a grid */
+    int rows = (int) Math.sqrt(numHumans);
+    world.setObjectLocation(h, new Double2D(world.getWidth() * 0.1 + (int) (i / rows) * 8.0,
+            world.getHeight() * 0.1 + (i % rows) * 8.0));
+    contacts.addNode(h);
+}
+/* create the grid-structured graph */
+graph.create(contacts);
+\end{lstlisting}
+
+A number of humans are added to the contact network and also placed in a world for visualisation. Their contacts are initialised by the graph creator, which will connect every human (except the humans at the edges) to its top, right, bottom and left neighbours.
+
+At this point, the simulation can be executed, but will not yield any results. For this, we can implement methods to retrieve the counts of agents in different states. For infectious agents, this might look like shown in \autoref{lst:tut:probe}.
+
+\begin{lstlisting}[label=lst:tut:probe,caption={A method probing the number of infectious agents.},language=Java]
+public int getNumInfected() {
+    return contacts.getAllNodes().stream().filter(h -> ((Human)h).infectionState == InfectionState.INFECTIOUS).count();
+}
+\end{lstlisting}
+
+This concludes this brief tutorial. As a next step a visualisation class could be added, which works in the same way as described in MASON's excellent manual, to which the reader is referred for further details. The manual can be found at: \url{https://cs.gmu.edu/~eclab/projects/mason/manual.pdf}.
+
+\end{document}

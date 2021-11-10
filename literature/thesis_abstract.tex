@@ -1,0 +1,26 @@
+\documentclass[a4paper, 12pt, bibliography=numbered]{article}
+\usepackage{microtype}
+
+\title{Inferring Dependency Graphs for Agent-Based Models using Aspect-Oriented Programming}
+\author{Justin Kreikemeyer}
+
+\begin{document}
+
+    \maketitle
+
+    \begin{abstract}
+
+        Agent-based models (ABMs) have become a popular approach in many domains of modelling and simulation.
+        Recent works proposed that some of those models might be mapped to a Continuous-Time Markov Chain and simulated using a Stochastic Simulation Algorithm (SSA).
+        It was however found that, especially in the case of ABM, the original SSA is rather inefficient:
+        it does not exploit the locality of the agents' actions.
+        SSAs that do, require information about inter-agent dependencies.
+        One way to provide such information to the SSA is by explicitly encoding it in the model, which contradicts the separation of concerns.
+        The goal of this thesis is to use aspect-oriented programming to automatically retrieve those dependencies without the need to encode information in the model.
+        A concept for aspect-oriented SSAs is provided, which can be integrated with existing ABM frameworks that are based on a general purpose language.
+        As a proof of concept, the integration is performed as an extension to the MASON framework.
+        Further, its performance is characterised and the range of applicability is discussed.
+
+    \end{abstract}
+
+\end{document}
