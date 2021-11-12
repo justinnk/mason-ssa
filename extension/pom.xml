@@ -31,25 +31,6 @@
             <groupId>cs.gmu.edu.eclab</groupId>
             <artifactId>mason</artifactId>
         </dependency>
-        <!-- needed for charting -->
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jcommon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-        </dependency>
-        <!-- 3d visualisation -->
-        <dependency>
-            <groupId>java3d</groupId>
-            <artifactId>j3d-core</artifactId>
-        </dependency>
-        <!-- for imovie support -->
-        <dependency>
-            <groupId>javax.media</groupId>
-            <artifactId>jmf</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

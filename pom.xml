@@ -75,29 +75,6 @@
                 <artifactId>mason</artifactId>
                 <version>${mason.version}</version>
             </dependency>
-            <!-- needed for charting -->
-            <dependency>
-                <groupId>org.jfree</groupId>
-                <artifactId>jcommon</artifactId>
-                <version>1.0.24</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lowagie</groupId>
-                <artifactId>itext</artifactId>
-                <version>1.2.3</version>
-            </dependency>
-            <!-- 3d visualisation -->
-            <dependency>
-                <groupId>java3d</groupId>
-                <artifactId>j3d-core</artifactId>
-                <version>1.3.1</version>
-            </dependency>
-            <!-- for imovie support -->
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jmf</artifactId>
-                <version>2.1.1e</version>
-            </dependency>
             <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
             <dependency>
                 <groupId>org.aspectj</groupId>
