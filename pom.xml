@@ -16,12 +16,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <groupId>org.justinnk.ssamason</groupId>
-    <artifactId>ssamason</artifactId>
+    <groupId>org.justinnk.masonssa</groupId>
+    <artifactId>masonssa</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <name>MASON-ABM-SSA</name>
+    <name>MASON-SSA</name>
     <description>Creating fast agent-based models utilising SSA in MASON.</description>
     <url>https://github.com/justinnk/mason-abm-ssa</url>
     <inceptionYear>2021</inceptionYear>

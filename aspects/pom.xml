@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.justinnk.ssamason</groupId>
-        <artifactId>ssamason</artifactId>
+        <groupId>org.justinnk.masonssa</groupId>
+        <artifactId>masonssa</artifactId>
         <version>${revision}</version>
     </parent>
     <artifactId>aspects</artifactId>
@@ -62,7 +62,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.justinnk.ssamason</groupId>
+                <groupId>org.justinnk.masonssa</groupId>
                 <artifactId>extension</artifactId>
                 <version>${project.version}</version>
             </dependency>

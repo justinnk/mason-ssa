@@ -59,7 +59,7 @@ The first step is very similar to pure MASON: A class is defined, which manages 
 
 \begin{lstlisting}[label=lst:tut:base,caption={The basis of our SIR model.},language=Java]
 package org.tutorial;
-import org.justinnk.ssamason.extension.*;
+import org.justinnk.masonssa.extension.*;
 
 class SirModel extends SSASimState {
 
@@ -105,7 +105,7 @@ So far, the process was very similar to MASON. However, defining agents is a lit
 
 \begin{lstlisting}[label=lst:tut:human,caption={The basis of our Human agent.},language=Java]
 package org.tutorial;
-import org.justinnk.ssamason.extension.*;
+import org.justinnk.masonssa.extension.*;
 
 class Human extends Agent {
     public enum InfectionState {

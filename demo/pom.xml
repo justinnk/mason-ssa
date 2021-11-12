@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.justinnk.ssamason</groupId>
-        <artifactId>ssamason</artifactId>
+        <groupId>org.justinnk.masonssa</groupId>
+        <artifactId>masonssa</artifactId>
         <version>${revision}</version>
     </parent>
 
@@ -50,18 +50,18 @@
                             <artifactId>mason</artifactId>
                         </weaveDependency>
                         <weaveDependency>
-                            <groupId>org.justinnk.ssamason</groupId>
+                            <groupId>org.justinnk.masonssa</groupId>
                             <artifactId>extension</artifactId>
                         </weaveDependency>
                     </weaveDependencies>
                     <!-- include aspects from the ssa extension -->
                     <aspectLibraries>
                         <aspectLibrary>
-                            <groupId>org.justinnk.ssamason</groupId>
+                            <groupId>org.justinnk.masonssa</groupId>
                             <artifactId>aspects-base</artifactId>
                         </aspectLibrary>
                         <aspectLibrary>
-                            <groupId>org.justinnk.ssamason</groupId>
+                            <groupId>org.justinnk.masonssa</groupId>
                             <artifactId>aspects-nrm</artifactId>
                         </aspectLibrary>
                     </aspectLibraries>
@@ -100,7 +100,7 @@
 <!--                            <archive>-->
 <!--                                <manifest>-->
 <!--                                    <mainClass>-->
-<!--                                        org.justinnk.ssamason.demo.ssamason.sir.SirModelWithUI-->
+<!--                                        org.justinnk.masonssa.demo.masonssa.sir.SirModelWithUI-->
 <!--                                    </mainClass>-->
 <!--                                </manifest>-->
 <!--                            </archive>-->
@@ -140,22 +140,22 @@
             <artifactId>jmh-generator-annprocess</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.justinnk.ssamason</groupId>
+            <groupId>org.justinnk.masonssa</groupId>
             <artifactId>extension</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>org.justinnk.ssamason</groupId>
+            <groupId>org.justinnk.masonssa</groupId>
             <artifactId>aspects-base</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>org.justinnk.ssamason</groupId>
+            <groupId>org.justinnk.masonssa</groupId>
             <artifactId>aspects-nrm</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>org.justinnk.ssamason</groupId>
+            <groupId>org.justinnk.masonssa</groupId>
             <artifactId>aspects-odm</artifactId>
             <version>${revision}</version>
         </dependency>

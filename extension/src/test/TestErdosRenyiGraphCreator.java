@@ -2,12 +2,12 @@
  * This repository might have licensing issues, which are in the process of being resolved, so no use is permitted at this time.
  */
 
-package org.justinnk.ssamason.test;
+package org.justinnk.masonssa.test;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
-import org.justinnk.ssamason.extension.graphs.ErdosRenyiGraphCreator;
+import org.justinnk.masonssa.extension.graphs.ErdosRenyiGraphCreator;
 import sim.field.network.Network;
 import sim.util.Bag;
 

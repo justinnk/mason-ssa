@@ -2,15 +2,15 @@
  * This repository might have licensing issues, which are in the process of being resolved, so no use is permitted at this time.
  */
 
-package org.justinnk.ssamason.test;
+package org.justinnk.masonssa.test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.justinnk.ssamason.extension.Action;
-import org.justinnk.ssamason.extension.Agent;
-import org.justinnk.ssamason.extension.ssa.AttributeDependencyGraph;
+import org.justinnk.masonssa.extension.Action;
+import org.justinnk.masonssa.extension.Agent;
+import org.justinnk.masonssa.extension.ssa.AttributeDependencyGraph;
 import sim.engine.SimState;
 
 class TestAttributeDependencyGraph {
