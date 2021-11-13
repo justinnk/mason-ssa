@@ -1,21 +1,40 @@
 /*
- * This repository might have licensing issues, which are in the process of being resolved, so no use is permitted at this time.
+ * Copyright 2021 Justin Kreikemeyer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.justinnk.masonssa.demo.mason.vanillasirs;
+package org.justinnk.masonssa.demo.ssa.sirs;
 
 import org.justinnk.masonssa.demo.InfectionState;
+import org.justinnk.masonssa.extension.SSASimState;
 import org.justinnk.masonssa.extension.graphs.ErdosRenyiGraphCreator;
 import org.justinnk.masonssa.extension.graphs.GraphCreator;
-import sim.engine.SimState;
-import sim.engine.Steppable;
+import org.justinnk.masonssa.extension.ssa.FirstReactionMethod;
+import org.justinnk.masonssa.extension.ssa.StochasticSimulationAlgorithm;
 import sim.field.continuous.Continuous2D;
 import sim.field.network.Network;
 import sim.util.Bag;
 import sim.util.Double2D;
 import sim.util.Interval;
 
-public class SirsModel extends SimState {
+/* TODO: at the end add serialisability to extension. */
+
+/**
+ * Basic network-based susceptible-infectious-recovered-susceptible model using the SSA-extension to
+ * MASON.
+ */
+public class SirsModel extends SSASimState {
 
   private static final long serialVersionUID = 1L;
 
@@ -38,7 +57,7 @@ public class SirsModel extends SimState {
     numHumans = value;
   }
 
-  private int initialInfected = 1;
+  private int initialInfected = 45;
 
   public int getInitialInfected() {
     return initialInfected;
@@ -46,10 +65,6 @@ public class SirsModel extends SimState {
 
   public void setInitialInfected(int value) {
     initialInfected = value;
-  }
-
-  public Object domInitialInfected() {
-    return new Interval(0, numHumans);
   }
 
   private int initialRecovered = 45;
@@ -62,6 +77,10 @@ public class SirsModel extends SimState {
     initialRecovered = value;
   }
 
+  public Object domInitialInfected() {
+    return new Interval(0, numHumans);
+  }
+
   private double recoveryTime = 20.0;
 
   public double getRecoveryRate() {
@@ -72,6 +91,18 @@ public class SirsModel extends SimState {
 
   public double getInfectionRate() {
     return 1.0 / infectionTime;
+  }
+
+  private double loseImmunityTime = 20.0;
+
+  public double getLoseImmunityRate() {
+    return 1.0 / loseImmunityTime;
+  }
+
+  private double spontaneousInfectionRate = 200.0;
+
+  public double getSpontaneousInfectionTime() {
+    return 1.0 / spontaneousInfectionRate;
   }
 
   public int getNumSusceptible() {
@@ -108,12 +139,12 @@ public class SirsModel extends SimState {
   }
 
   public SirsModel(long seed) {
-    super(seed);
+    super(seed, new FirstReactionMethod());
     this.graph = new ErdosRenyiGraphCreator(42, 0.2);
   }
 
-  public SirsModel(long seed, GraphCreator graph) {
-    super(seed);
+  public SirsModel(long seed, StochasticSimulationAlgorithm simulator, GraphCreator graph) {
+    super(seed, simulator);
     this.graph = graph;
   }
 
@@ -121,16 +152,15 @@ public class SirsModel extends SimState {
     super.start();
     world.clear();
     contacts.clear();
-    // MersenneTwisterFast lrandom = new MersenneTwisterFast(42);
     for (int i = 0; i < numHumans; i++) {
-      Human h = new Human(this, i);
+      Human h = new Human(this);
       /* Set initial infection */
       if (i < initialInfected) {
         h.infectionState = InfectionState.INFECTIOUS;
       } else if (i < initialInfected + initialRecovered) {
         h.infectionState = InfectionState.RECOVERED;
       }
-      /* Place nodes in a grid structure*/
+      /* Place humans in grid shape */
       int rows = (int) Math.sqrt(numHumans);
       world.setObjectLocation(
           h,
@@ -138,17 +168,6 @@ public class SirsModel extends SimState {
               world.getWidth() * 0.1 + (int) (i / rows) * 8.0,
               world.getHeight() * 0.1 + (i % rows) * 8.0));
       contacts.addNode(h);
-      /* Add node to the schedule */
-      schedule.scheduleOnce(
-          0.0,
-          new Steppable() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void step(SimState arg0) {
-              h.scheduleNextEvent();
-            }
-          });
     }
     graph.create(contacts);
   }

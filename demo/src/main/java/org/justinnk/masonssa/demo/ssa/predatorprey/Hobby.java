@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package org.justinnk.masonssa.extension.ssa;
+package org.justinnk.masonssa.demo.ssa.predatorprey;
 
-import org.justinnk.masonssa.extension.SSASimState;
-
-/** Interface providing common methods of stochastic simulation algorithms. */
-public abstract class StochasticSimulationAlgorithm {
-
-  /** The SSAs view of the current simulation state. */
-  protected SSASimState state;
-
-  public StochasticSimulationAlgorithm() {}
-
-  /**
-   * Initialise the SSA.
-   *
-   * @param model The initial model state.
-   */
-  public void init(SSASimState model) {
-    this.state = model;
-  }
+public enum Hobby {
+  MUSIC,
+  TRAVELLING,
+  SKATEBOARDING
 }

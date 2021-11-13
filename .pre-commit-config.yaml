@@ -9,7 +9,7 @@ repos:
             files: .+\/src\/.+\.(java|aj)$
             args:
               - --license-filepath
-              - LICENSE
+              - resources/license-header.txt
               - --comment-style
               - /*| *| */
   # general hooks

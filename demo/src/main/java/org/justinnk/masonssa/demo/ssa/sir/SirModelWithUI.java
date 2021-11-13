@@ -1,12 +1,25 @@
 /*
- * This repository might have licensing issues, which are in the process of being resolved, so no use is permitted at this time.
+ * Copyright 2021 Justin Kreikemeyer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.justinnk.masonssa.demo.mason.vanillasirs;
+package org.justinnk.masonssa.demo.ssa.sir;
 
 import java.awt.*;
 import javax.swing.*;
 import org.justinnk.masonssa.extension.graphs.GridGraphCreator;
+import org.justinnk.masonssa.extension.ssa.NextReactionMethod;
 import sim.display.*;
 import sim.engine.SimState;
 import sim.portrayal.DrawInfo2D;
@@ -21,10 +34,11 @@ import sim.util.Valuable;
 import sim.util.media.chart.TimeSeriesAttributes;
 import sim.util.media.chart.TimeSeriesChartGenerator;
 
-public class SirsModelWithUI extends GUIState {
+/** GUI for the network-base SIR model. */
+public class SirModelWithUI extends GUIState {
 
   public static void main(String[] args) {
-    SirsModelWithUI vid = new SirsModelWithUI();
+    SirModelWithUI vid = new SirModelWithUI();
     Console c = new Console(vid);
     c.setVisible(true);
   }
@@ -38,13 +52,12 @@ public class SirsModelWithUI extends GUIState {
   public TimeSeriesAttributes recoverySeries;
   public TimeSeriesAttributes susceptibleSeries;
 
-  public SirsModelWithUI() {
-    super(new SirsModel(42, new GridGraphCreator()));
-    // super(new SIRModel(42, new ErdosRenyiGraphCreator(42, 0.45)));
+  public SirModelWithUI() {
+    super(new SirModel(42, new NextReactionMethod(), new GridGraphCreator()));
     // super(new SIRModel(50));
   }
 
-  public SirsModelWithUI(SimState state) {
+  public SirModelWithUI(SimState state) {
     super(state);
   }
 
@@ -73,7 +86,9 @@ public class SirsModelWithUI extends GUIState {
   }
 
   public void setupPortrayals() {
-    SirsModel model = (SirsModel) state;
+    SirModel model = (SirModel) state;
+
+    SIRSeries.clearAllSeries();
 
     worldPortrayal.setField(model.world);
     worldPortrayal.setPortrayalForAll(

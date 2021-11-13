@@ -100,7 +100,7 @@
 <!--                            <archive>-->
 <!--                                <manifest>-->
 <!--                                    <mainClass>-->
-<!--                                        org.justinnk.masonssa.demo.masonssa.sir.SirModelWithUI-->
+<!--                                        org.justinnk.masonssa.demo.ssa.sir.SirModelWithUI-->
 <!--                                    </mainClass>-->
 <!--                                </manifest>-->
 <!--                            </archive>-->

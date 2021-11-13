@@ -1,8 +1,20 @@
 /*
- * This repository might have licensing issues, which are in the process of being resolved, so no use is permitted at this time.
+ * Copyright 2021 Justin Kreikemeyer
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.justinnk.masonssa.demo.masonssa.sirs;
+package org.justinnk.masonssa.demo.ssa.sir;
 
 import org.justinnk.masonssa.demo.InfectionState;
 import org.justinnk.masonssa.extension.SSASimState;
@@ -18,16 +30,13 @@ import sim.util.Interval;
 
 /* TODO: at the end add serialisability to extension. */
 
-/**
- * Basic network-based susceptible-infectious-recovered-susceptible model using the SSA-extension to
- * MASON.
- */
-public class SirsModel extends SSASimState {
+/** Basic network-based susceptible-infectious-recovered model using the SSA-extension to MASON. */
+public class SirModel extends SSASimState {
 
   private static final long serialVersionUID = 1L;
 
   public static void main(String[] args) {
-    doLoop(SirsModel.class, args);
+    doLoop(SirModel.class, args);
     System.exit(0);
   }
 
@@ -45,7 +54,7 @@ public class SirsModel extends SSASimState {
     numHumans = value;
   }
 
-  private int initialInfected = 45;
+  private int initialInfected = 1;
 
   public int getInitialInfected() {
     return initialInfected;
@@ -55,42 +64,20 @@ public class SirsModel extends SSASimState {
     initialInfected = value;
   }
 
-  private int initialRecovered = 45;
-
-  public int getInitialRecovered() {
-    return initialRecovered;
-  }
-
-  public void setInitialRecovered(int value) {
-    initialRecovered = value;
-  }
-
   public Object domInitialInfected() {
     return new Interval(0, numHumans);
   }
 
-  private double recoveryTime = 20.0;
+  private double recoveryTime = 25.0;
 
   public double getRecoveryRate() {
     return 1.0 / recoveryTime;
   }
 
-  private double infectionTime = 5.0;
+  private double infectionTime = 10.0;
 
   public double getInfectionRate() {
     return 1.0 / infectionTime;
-  }
-
-  private double loseImmunityTime = 20.0;
-
-  public double getLoseImmunityRate() {
-    return 1.0 / loseImmunityTime;
-  }
-
-  private double spontaneousInfectionRate = 200.0;
-
-  public double getSpontaneousInfectionTime() {
-    return 1.0 / spontaneousInfectionRate;
   }
 
   public int getNumSusceptible() {
@@ -126,12 +113,12 @@ public class SirsModel extends SSASimState {
     return num;
   }
 
-  public SirsModel(long seed) {
+  public SirModel(long seed) {
     super(seed, new FirstReactionMethod());
     this.graph = new ErdosRenyiGraphCreator(42, 0.2);
   }
 
-  public SirsModel(long seed, StochasticSimulationAlgorithm simulator, GraphCreator graph) {
+  public SirModel(long seed, StochasticSimulationAlgorithm simulator, GraphCreator graph) {
     super(seed, simulator);
     this.graph = graph;
   }
@@ -140,15 +127,19 @@ public class SirsModel extends SSASimState {
     super.start();
     world.clear();
     contacts.clear();
+    // MersenneTwisterFast lrandom = new MersenneTwisterFast(42);
     for (int i = 0; i < numHumans; i++) {
       Human h = new Human(this);
       /* Set initial infection */
       if (i < initialInfected) {
         h.infectionState = InfectionState.INFECTIOUS;
-      } else if (i < initialInfected + initialRecovered) {
-        h.infectionState = InfectionState.RECOVERED;
       }
-      /* Place humans in grid shape */
+      /* Place node at random location */
+      /*
+       * world.setObjectLocation(h, new Double2D( world.getWidth() * 0.5 +
+       * (lrandom.nextDouble() - 0.5) * 100.0, world.getHeight() * 0.5 +
+       * (lrandom.nextDouble() - 0.5) * 100.0));
+       */
       int rows = (int) Math.sqrt(numHumans);
       world.setObjectLocation(
           h,
