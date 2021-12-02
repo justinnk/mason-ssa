@@ -18,6 +18,10 @@ package org.justinnk.masonssa.extension;
 
 /** Functional interface for a rate expression that can be calculated. */
 public interface RateExpression {
-  /** Calculate the rate. */
+  /**
+   * Calculate the rate.
+   *
+   * @return the value of the rate expression in the current state.
+   */
   double rate();
 }

@@ -18,6 +18,10 @@ package org.justinnk.masonssa.extension;
 
 /** Functional interface for a guard expressions returning a boolean upon evaluation. */
 public interface Guard {
-  /** Evaluate this condition. */
+  /**
+   * Evaluate this condition.
+   *
+   * @return whether the condition is met in the current state.
+   */
   boolean evaluate();
 }

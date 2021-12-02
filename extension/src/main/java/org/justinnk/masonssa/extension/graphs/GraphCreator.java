@@ -34,6 +34,10 @@ public abstract class GraphCreator {
     this.seed = seed;
   }
 
-  /** Connect the nodes found in network to form a graph. */
+  /**
+   * Connect the nodes found in network to form a graph.
+   *
+   * @param network The network of which the nodes are to be connected.
+   */
   public abstract void create(Network network);
 }

@@ -27,7 +27,12 @@ public class SSASimState extends SimState {
   /** The SSA to use. */
   protected StochasticSimulationAlgorithm simulator;
 
-  /** Create a new model instance using the given seed and simulator. */
+  /**
+   * Create a new model instance using the given seed and simulator.
+   *
+   * @param seed The seed with which to initialise the random number generator
+   * @param simulator the simulation to use for this simulation
+   */
   public SSASimState(long seed, StochasticSimulationAlgorithm simulator) {
     super(seed);
     this.simulator = simulator;

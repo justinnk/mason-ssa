@@ -30,7 +30,7 @@ public class DataFrame {
     this.name = "<DataFrame" + this + ">";
   }
 
-  /** Returns whether this table has any non-empty columns. */
+  /** @return whether this table has any non-empty columns. */
   public boolean isEmpty() {
     if (!columns.isEmpty()) {
       return columns.stream().allMatch(c -> c.data.isEmpty());

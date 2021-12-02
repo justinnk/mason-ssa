@@ -38,7 +38,7 @@ public abstract aspect DependencySymbiont{
 	 */
 
 	/*
-	 * The following have to be set, because some pointcuts may apply multiple times
+	 * The following have to be sets, because some pointcuts may apply multiple times
 	 * in the same control flow. This is because either the modeller uses multiple
 	 * or redundant attribute assignments or there is no way (that I am aware of) to
 	 * define a more specific pointcut.

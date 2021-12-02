@@ -34,7 +34,11 @@ public class Agent {
   /** List of actions (i.e. behaviour rules) of this agent. */
   private List<Action> actions = new ArrayList<>();
 
-  /** Add a new behaviour rule to this agent. */
+  /**
+   * Add a new behaviour rule to this agent.
+   *
+   * @param action The action which to add.
+   */
   protected void addAction(Action action) {
     /* actions must have names unique within agents. */
     if (this.actions.stream().anyMatch((a) -> Objects.equals(a.getName(), action.getName()))) {
@@ -74,7 +78,11 @@ public class Agent {
     }
   }
 
-  /** Internal method to prepend the agents id in front of message. */
+  /**
+   * Internal method to prepend the agents id in front of message.
+   *
+   * @param message The message this agent is logging.
+   */
   protected void log(String message) {
     if (enableAgentLogging) System.out.println("Agent " + id + ": " + message);
   }

@@ -4,7 +4,7 @@ repos:
       rev: v1.1.10
       hooks:
         -   id: insert-license
-            # TODO: make pull request to identify to include .aj files as type
+            # TODO: wait for my merged changes to identify to support .aj files to be integrated into pre-commit
             types: [file]
             files: .+\/src\/.+\.(java|aj)$
             args:

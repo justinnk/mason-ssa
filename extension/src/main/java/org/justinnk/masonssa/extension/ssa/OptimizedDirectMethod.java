@@ -101,6 +101,8 @@ public class OptimizedDirectMethod extends DependencyBasedSSA {
    * Initialise an action by calculating its rate and adding it to the sum of rates (if applicable).
    *
    * @param action The action to initialise.
+   * @return the current rate of the action if its precondition is met, Double.NEGATIVE_INFINITY
+   *     otherwise.
    */
   public double initAction(Action action) {
     double rate;

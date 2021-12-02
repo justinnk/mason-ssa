@@ -66,7 +66,7 @@ public class Action {
   private TentativeStep nextEvent = null;
 
   /**
-   * Define a new behaviour rule for an agents. Should not be instantiated outside of a class
+   * Define a new behaviour rule for an agents. Should not be instantiated outside a class
    * inheriting from agent.
    *
    * @param precondition The guard function for determining whether this action is applicable in the
@@ -117,7 +117,7 @@ public class Action {
 
   /**
    * If there is an event scheduled for this action, stop it. Resets the currentTimestamp to
-   * Double.NETGATIVE_INFINITY and currentRate to 0.0
+   * Double.NEGATIVE_INFINITY and currentRate to 0.0
    */
   public void stopNextEvent() {
     if (this.nextEvent != null) {
@@ -127,7 +127,11 @@ public class Action {
     this.currentRate = 0.0;
   }
 
-  /** Set the agent that defines this action as owner. */
+  /**
+   * Set the agent that defines this action as owner.
+   *
+   * @param owner The agent that owns this action.
+   */
   public void setOwner(Agent owner) {
     this.owner = owner;
   }
@@ -145,6 +149,8 @@ public class Action {
   /**
    * Evaluate the guard expression for this action in the current simulation state. This will also
    * update the currentGuard to the new value.
+   *
+   * @return whether the condition is met in the current state.
    */
   public boolean evaluateCondition() {
     boolean condition = this.guard.evaluate();
@@ -155,6 +161,8 @@ public class Action {
   /**
    * Calculate the rate function for this action in the current simulation state. This will also
    * update the currentRate to the new value.
+   *
+   * @return the new rate at which this action is executed.
    */
   public double calculateRate() {
     double rate = this.rate.rate();
@@ -168,24 +176,24 @@ public class Action {
   }
 
   /**
-   * The value of the rate expression when it was evaluated last. This is used for calculating the
-   * new rate in the NRM.
+   * @return The value of the rate expression when it was evaluated last. This is used for
+   *     calculating the new rate in the NRM.
    */
   public double getCurrentRate() {
     return this.currentRate;
   }
 
   /**
-   * The value of the guard expression when it was evaluated last. This is used for recalculating
-   * the rate sum in the ODM.
+   * @return The value of the guard expression when it was evaluated last. This is used for
+   *     recalculating the rate sum in the ODM.
    */
   public boolean getCurrentGuard() {
     return this.currentGuard;
   }
 
   /**
-   * The time stamp resulting from the last evaluation of the rate expression. This is used for
-   * calculating the new rate in the NRM.
+   * @return The time stamp resulting from the last evaluation of the rate expression. This is used
+   *     for calculating the new rate in the NRM.
    */
   public double getCurrentTimestamp() {
     return this.currentTimestamp;
