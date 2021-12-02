@@ -2,13 +2,125 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <!-- define the version number here, so all submodules can use it, see: -->
+        <!-- https://blog.soebes.de/blog/2017/04/02/maven-pom-files-without-a-version-in-it/ -->
+        <revision>0.0.1-SNAPSHOT</revision>
+        <!-- for easy dependency version configuration -->
+        <aspectj.pluginversion>1.12.6</aspectj.pluginversion>
+        <aspectj.version>1.9.6</aspectj.version>
+        <jmh.version>1.29</jmh.version>
+        <mason.version>20</mason.version>
+        <!-- target Java 8 -->
+        <java.source>1.8</java.source>
+        <java.target>1.8</java.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <groupId>io.github.justinnk.masonssa</groupId>
+    <artifactId>masonssa</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>extension</module>
+        <module>aspects</module>
+        <module>demo</module>
+    </modules>
+
+    <name>MASON SSA Extension</name>
+    <description>Creating fast agent-based models utilising SSA in MASON.</description>
+    <url>https://github.com/justinnk/mason-ssa</url>
+    <inceptionYear>2021</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Justin Kreikemeyer</name>
+            <!--            <email></email>-->
+            <!--            <organization></organization>-->
+            <organizationUrl>https://github.com/justinnk</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/justinnk/mason-ssa.git</connection>
+        <developerConnection>scm:git:ssh://github.com:justinnk/mason-ssa.git</developerConnection>
+        <url>https://github.com/justinnk/mason-ssa</url>
+    </scm>
+
+    <!-- dependencies used by submodules -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- MASON simulation framework, has to be installed manually, see README -->
+            <dependency>
+                <groupId>cs.gmu.edu.eclab</groupId>
+                <artifactId>mason</artifactId>
+                <version>${mason.version}</version>
+            </dependency>
+            <!-- aspectj module for weaving aspects into java code -->
+            <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!-- the runtime used by aspectj -->
+            <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+            <!-- for performance analysis and benchmarking -->
+            <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core -->
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+            <!-- annotation processor for jmh -->
+            <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core -->
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+            <!-- for unit testing -->
+            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>5.5.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- snapshot repository for sonatype -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <profiles>
+        <!-- prepare release through a separate profile for debugging performance improvements -->
         <profile>
             <id>release</id>
             <build>
                 <plugins>
+                    <!-- for deployment and release to the central repository -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -21,6 +133,7 @@
                         </configuration>
                     </plugin>
                     <plugin>
+                        <!-- sources must be made available for release -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <version>2.2.1</version>
@@ -34,6 +147,7 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <!-- javadoc must be made available for release -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>2.9.1</version>
@@ -47,6 +161,7 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <!-- release files must be signed -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.5</version>
@@ -64,105 +179,4 @@
             </build>
         </profile>
     </profiles>
-
-    <properties>
-        <!-- https://blog.soebes.de/blog/2017/04/02/maven-pom-files-without-a-version-in-it/ -->
-        <revision>0.0.1-SNAPSHOT</revision>
-        <aspectj.pluginversion>1.12.6</aspectj.pluginversion>
-        <aspectj.version>1.9.6</aspectj.version>
-        <jmh.version>1.29</jmh.version>
-        <mason.version>20</mason.version>
-        <java.source>1.8</java.source>
-        <java.target>1.8</java.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <groupId>io.github.justinnk.masonssa</groupId>
-    <artifactId>masonssa</artifactId>
-    <version>${revision}</version>
-    <packaging>pom</packaging>
-
-    <name>MASON SSA Extension</name>
-    <description>Creating fast agent-based models utilising SSA in MASON.</description>
-    <url>https://github.com/justinnk/mason-ssa</url>
-    <inceptionYear>2021</inceptionYear>
-
-    <licenses>
-        <license>
-            <name>Apache-2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>Justin Kreikemeyer</name>
-<!--            <email></email>-->
-<!--            <organization></organization>-->
-            <organizationUrl>https://github.com/justinnk</organizationUrl>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:git://github.com/justinnk/mason-ssa.git</connection>
-        <developerConnection>scm:git:ssh://github.com:justinnk/mason-ssa.git</developerConnection>
-        <url>https://github.com/justinnk/mason-ssa</url>
-    </scm>
-
-    <modules>
-        <module>extension</module>
-        <module>aspects</module>
-        <module>demo</module>
-    </modules>
-
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>cs.gmu.edu.eclab</groupId>
-                <artifactId>mason</artifactId>
-                <version>${mason.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectj.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>${aspectj.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core -->
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-core</artifactId>
-                <version>${jmh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-generator-annprocess</artifactId>
-                <version>${jmh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.5.2</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven3/</url>
-        </repository>
-    </distributionManagement>
 </project>

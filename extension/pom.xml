@@ -1,21 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <parent>
         <groupId>io.github.justinnk.masonssa</groupId>
         <artifactId>masonssa</artifactId>
         <version>${revision}</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>extension</artifactId>
     <packaging>jar</packaging>
-    <name>MASON-ABM-SSA Extension Code</name>
-    <description>Creating fast agent-based models utilising SSA in MASON.</description>
+    <name>MASON SSA Extension Code</name>
+    <description>Java codebase for the extension.</description>
+
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
+            <!-- to compile with javac -->
             <plugin>
-                <!-- to compile with javac -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
@@ -26,6 +29,8 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- see parent pom for full spec -->
     <dependencies>
         <dependency>
             <groupId>cs.gmu.edu.eclab</groupId>

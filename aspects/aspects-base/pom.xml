@@ -1,35 +1,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>io.github.justinnk.masonssa</groupId>
         <artifactId>aspects</artifactId>
         <version>${revision}</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
+
     <artifactId>aspects-base</artifactId>
     <packaging>jar</packaging>
-    <name>MASON-ABM-SSA AspectJ Code: Base</name>
+    <name>MASON SSA Extension AspectJ Code: Base</name>
     <description>The base aspects used for tracking dependencies.</description>
+
     <build>
         <sourceDirectory>src/main/aspectj</sourceDirectory>
+        <!-- see parent pom for full spec -->
         <plugins>
             <plugin>
-                <!-- to weave aspects using a fork, since the original is not updated,
-                    see https://github.com/nickwongdev/aspectj-maven-plugin -->
                 <groupId>com.nickwongdev</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
+
+    <!-- see parent pom for full spec -->
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>

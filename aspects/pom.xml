@@ -2,28 +2,32 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>io.github.justinnk.masonssa</groupId>
         <artifactId>masonssa</artifactId>
         <version>${revision}</version>
     </parent>
+
     <artifactId>aspects</artifactId>
     <packaging>pom</packaging>
-
-    <name>MASON-ABM-SSA Aspects</name>
-    <description>The aspects used for tracking dependencies.</description>
 
     <modules>
         <module>aspects-base</module>
         <module>aspects-nrm</module>
         <module>aspects-odm</module>
     </modules>
+
+    <name>MASON SSA Extension Aspects</name>
+    <description>The aspects used for tracking dependencies.</description>
+
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <!-- to weave aspects using a fork, since the original is not updated,
+                    <!-- to weave aspects. Using a fork, since the original is not updated,
                         see https://github.com/nickwongdev/aspectj-maven-plugin -->
+                    <!-- TODO: might have been now -->
                     <groupId>com.nickwongdev</groupId>
                     <artifactId>aspectj-maven-plugin</artifactId>
                     <version>${aspectj.pluginversion}</version>
@@ -59,6 +63,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <!-- dependencies shared by submodules -->
     <dependencyManagement>
         <dependencies>
             <dependency>
