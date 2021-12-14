@@ -30,6 +30,7 @@ Supported SSAs:
   - clone this repository: `git clone https://github.com/justinnk/mason-ssa.git`
   - install the extension in your local repository: `mvn clean install`
 - from mvn central
+  - current version on maven central: `0.1.1`
   - include the extension as a dependency via maven using the atrifactId `io.github.justinnk.masonssa.<module>`
   - have a look at the [demo models](https://github.com/justinnk/mason-ssa-demo.git) for an example pom
 
@@ -52,22 +53,22 @@ For an example project, have a look at the [demo repository](https://github.com/
     <dependency>
       <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>extension</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.1</version>
     </dependency>
     <dependency>
       <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>aspects-base</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.1</version>
     </dependency>
     <dependency>
       <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>aspects-nrm</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.1</version>
     </dependency>
     <dependency>
       <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>aspects-odm</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.1</version>
     </dependency>
   </dependencies>
   ```
@@ -144,7 +145,7 @@ TODO
 
 ## Roadmap
 
-- Add the plugin to maven central
+- ~~Add the plugin to maven central~~
   - set up GitHub CI/CD
 - (Re-)implement automatic performance checking for easy testing of improvements
 - Improve dependency graph efficiency
@@ -164,8 +165,8 @@ This project makes use of external libraries. Their copyright information can be
 ## Literature
 
 - Tutorial: [preliminary version](literature/tutorial.pdf)
-- Thesis: [abstract](literature/thesis_abstract.pdf)
-- Paper: to be published
+- Thesis: [abstract](literature/thesis.pdf)
+- Paper: [can be found here](https://ssl.linklings.net/conferences/wsc/wsc2021_program/views/includes/files/inv165s3-file1.pdf)
 
 ## Cite
 
