@@ -26,58 +26,72 @@ Supported SSAs:
 
 ### :cd: Installation
 
-- clone this repository: `git clone https://github.com/justinnk/mason-abm-ssa.git`
-- install the extension in your local repository: `mvn clean install`
+- manual
+  - clone this repository: `git clone https://github.com/justinnk/mason-ssa.git`
+  - install the extension in your local repository: `mvn clean install`
+- from mvn central
+  - include the extension as a dependency via maven using the atrifactId `io.github.justinnk.masonssa.<module>`
+  - have a look at the [demo models](https://github.com/justinnk/mason-ssa-demo.git) for an example pom
 
 ### :rocket: Run Demo Model
 
-- run `./demo/run_showcase.sh`
+- clone the demo repository: `git clone https://github.com/justinnk/mason-ssa-demo.git`
+- navigate into the created folder: `cd mason-ssa-demp`
+- run `sh build.sh && sh run_showcase.sh`
 - The script currently only works / is only tested on Linux
 - with some adaptions, it should also run on windows
 - todo: add batch script
 
 ## :arrow_forward: Usage
 
+For an example project, have a look at the [demo repository](https://github.com/justinnk/mason-ssa-demo.git).
+
 1. In your maven `pox.xml` add the following dependencies
   ```xml
   <dependecies>
     <dependency>
-      <groupId>org.justinnk.masonssa</groupId>
+      <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>extension</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
-      <groupId>org.justinnk.masonssa</groupId>
+      <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>aspects-base</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
-      <groupId>org.justinnk.masonssa</groupId>
+      <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>aspects-nrm</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
-      <groupId>org.justinnk.masonssa</groupId>
+      <groupId>io.github.justinnk.masonssa</groupId>
       <artifactId>aspects-odm</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
   </dependencies>
   ```
 
-2. In order to weave the aspects, the following plugin has to be added in the `plugins` section of your `pom.xml`
+2. In order to weave the aspects, the following plugin has to be added in the `build>plugins` section of your `pom.xml`
   ```xml
+   <!-- we use a plugin to invoke the aspectj compiler (ajc) in the build process, after the classes have been
+              compiled using javac. We define weave dependencies to weave aspects into existing jar files of the
+               extension and MASON. We also define the aspect libraries to use, which are provided by the extension. -->
   <plugin>
     <groupId>com.nickwongdev</groupId>
     <artifactId>aspectj-maven-plugin</artifactId>
     <version>1.12.6</version>
     <configuration>
+      <!-- disable annotation processors, since the extension uses .aj files -->
       <proc>none</proc>
       <complianceLevel>1.8</complianceLevel>
       <source>1.8</source>
       <target>1.8</target>
+      <!-- be verbose for educational and debugging purposes -->
       <showWeaveInfo>true</showWeaveInfo>
       <verbose>true</verbose>
-      <Xlint>error</Xlint>
+      <!-- throw warning instead of error if some aspect has not been applied -->
+      <Xlint>warning</Xlint>
       <encoding>UTF-8</encoding>
       <forceAjcCompile>false</forceAjcCompile>
       <!-- enable weaving for mason-internal classes and extension classes -->
@@ -87,19 +101,19 @@ Supported SSAs:
           <artifactId>mason</artifactId>
         </weaveDependency>
         <weaveDependency>
-          <groupId>org.justinnk.masonssa</groupId>
+          <groupId>io.github.justinnk.masonssa</groupId>
           <artifactId>extension</artifactId>
         </weaveDependency>
       </weaveDependencies>
       <!-- include aspects from the ssa extension -->
       <aspectLibraries>
         <aspectLibrary>
-          <groupId>org.justinnk.masonssa</groupId>
+          <groupId>io.github.justinnk.masonssa</groupId>
           <artifactId>aspects-base</artifactId>
         </aspectLibrary>
         <!-- if you want to use the ODM instead, include aspects-odm here -->
         <aspectLibrary>
-          <groupId>org.justinnk.masonssa</groupId>
+          <groupId>io.github.justinnk.masonssa</groupId>
           <artifactId>aspects-nrm</artifactId>
         </aspectLibrary>
       </aspectLibraries>
@@ -116,10 +130,10 @@ Supported SSAs:
       <dependency>
         <groupId>org.aspectj</groupId>
         <artifactId>aspectjtools</artifactId>
-        <version>1.9.6</version>
+        <version>${aspectj.version}</version>
       </dependency>
     </dependencies>
-  </plugin>
+  </plugin> 
   ```
 
 3. Now you can use the extension like described in the documentation section
@@ -127,7 +141,6 @@ Supported SSAs:
 ## :book: Documentation
 
 TODO
-see `demo` module for now.
 
 ## Roadmap
 
