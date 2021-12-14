@@ -1,4 +1,3 @@
-<!-- TODO: Clean and comment poms -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -8,7 +7,7 @@
     <properties>
         <!-- define the version number here, so all submodules can use it, see: -->
         <!-- https://blog.soebes.de/blog/2017/04/02/maven-pom-files-without-a-version-in-it/ -->
-        <revision>0.0.1-SNAPSHOT</revision>
+        <revision>0.0.1</revision>
         <!-- for easy dependency version configuration -->
         <aspectj.pluginversion>1.12.6</aspectj.pluginversion>
         <aspectj.version>1.9.6</aspectj.version>
