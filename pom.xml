@@ -7,7 +7,7 @@
     <properties>
         <!-- define the version number here, so all submodules can use it, see: -->
         <!-- https://blog.soebes.de/blog/2017/04/02/maven-pom-files-without-a-version-in-it/ -->
-        <revision>0.0.1-SNAPSHOT</revision>
+        <revision>0.1.0</revision>
         <!-- for easy dependency version configuration -->
         <aspectj.pluginversion>1.12.6</aspectj.pluginversion>
         <aspectj.version>1.9.6</aspectj.version>
@@ -137,18 +137,22 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- snapshot repository for sonatype -->
+    <!-- (snapshot) repository for sonatype -->
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <profiles>
         <!-- prepare release through a separate profile for debugging performance improvements -->
         <profile>
-            <id>release</id>
+            <id>my-release</id>
             <build>
                 <plugins>
                     <!-- for resolving attributes (especially the revision) and flattening dependencies -->
@@ -156,18 +160,6 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>flatten-maven-plugin</artifactId>
                         <version>1.2.2</version>
-                    </plugin>
-                    <!-- for deployment and release to the central repository -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                        </configuration>
                     </plugin>
                     <plugin>
                         <!-- sources must be made available for release -->
