@@ -170,6 +170,26 @@ This project makes use of external libraries. Their copyright information can be
 
 ## Cite
 
+This tool was developed as part of a bachelor thesis.
+The results were also published in a conference paper:
+
 ```
-TODO
+J. N. Kreikemeyer, T. Köster, A. M. Uhrmacher and T. Warnke,
+"Inferring Dependency Graphs for Agent-Based Models Using Aspect-Oriented Programming,"
+2021 Winter Simulation Conference (WSC), Phoenix, AZ, USA, 2021, pp. 1-12,
+doi: 10.1109/WSC52266.2021.9715293.
+```
+Bibtex:
+
+
+```
+@inproceedings{kreikemeyer2021inferring,  author={Kreikemeyer, Justin Noah and Köster, Till and Uhrmacher, Adelinde M. and Warnke, Tom},
+  booktitle={2021 Winter Simulation Conference (WSC)},   title={Inferring Dependency Graphs for Agent-Based Models Using Aspect-Oriented Programming}, 
+  year={2021},
+  publisher={IEEE},
+  volume={},
+  number={},
+  pages={1-12},
+  doi={10.1109/WSC52266.2021.9715293}
+}
 ```
