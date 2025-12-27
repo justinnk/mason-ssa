@@ -183,8 +183,10 @@ Bibtex:
 
 
 ```
-@inproceedings{kreikemeyer2021inferring,  author={Kreikemeyer, Justin Noah and Köster, Till and Uhrmacher, Adelinde M. and Warnke, Tom},
-  booktitle={2021 Winter Simulation Conference (WSC)},   title={Inferring Dependency Graphs for Agent-Based Models Using Aspect-Oriented Programming}, 
+@inproceedings{kreikemeyer2021inferring,
+  author={Kreikemeyer, Justin Noah and Köster, Till and Uhrmacher, Adelinde M. and Warnke, Tom},
+  booktitle={2021 Winter Simulation Conference (WSC)},
+  title={Inferring Dependency Graphs for Agent-Based Models Using Aspect-Oriented Programming}, 
   year={2021},
   publisher={IEEE},
   volume={},
